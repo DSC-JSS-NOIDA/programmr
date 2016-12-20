@@ -1,0 +1,2 @@
+SOCIAL_AUTH_GOOGLE_KEY = 'xxxxxxxx'
+SOCIAL_AUTH_GOOGLE_SECRET = 'xxxxxxxxxx'

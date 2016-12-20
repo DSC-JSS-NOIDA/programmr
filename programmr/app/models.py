@@ -16,7 +16,7 @@ class Users(models.Model):
 	total_score=models.CharField(max_length=120)
 
 
-class Questions(models.Model):
+class Question(models.Model):
 	title=models.CharField(max_length=120)
 	detail=models.TextField()
 	constraint=models.CharField(max_length=120)
