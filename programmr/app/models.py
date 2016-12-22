@@ -6,7 +6,7 @@ from django.db import models
 
 class Users(models.Model):
 	name=models.CharField(max_length=120)
-	email_ID=models.CharField(max_length=200)
+	email_ID=models.EmailField(max_length=200)
 	avatar=models.URLField(max_length=120)
 	year=models.CharField(max_length=120)
 	branch=models.CharField(max_length=120)
