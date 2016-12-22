@@ -1,46 +1,24 @@
-from django.shortcuts import render,redirect
-from .models import Users
-from .forms import ProfileForm
+from django.shortcuts import render
+from django import http
 
-from .models import Users
-from django.http import *
-
+from oauth2client.contrib.django_util import decorators
 
 # Create your views here.
+def index(request):
+	return http.HttpResponse("Hello, World!")
 
-def home(request):
-	return render(request,"home.html")
 
-def profile(request):
-	email="nooreenharoon@gmail.com"
-	
-	form=ProfileForm(request.POST or None, request.FILES or None)
-	if form.is_valid():
-		instance=form.save(commit=False)
-		instance.save()
-        
-		
-		return redirect("app:dashboard")
-		
+
+@decorators.oauth_required
+def get_profile_required(request):
+	resp, content = request.oauth.http.request('https://www.googleapis.com/plus/v1/people/me')
+	return http.HttpResponse(content)
+
+
+
+@decorators.oauth_enabled
+def get_profile_optional(request):
+	if request.oauth.has_credentials():
+		return http.HttpResponse('User email: {}'.format(request.oauth.credentials.id_token['email']))
 	else:
-	 	
-		context={
-	     "form": form,
-	}
-	
-	
-	return render(request,"profile.html",context)
-
-
-
-def dashboard(request):
-	#check auth user
-	return render(request,"dashboard.html")
-
-def rules(request):
-	return render(request,"rules.html")
-	
-def announcements(request):
-	return render(request,"announcements.html")
-	
-	
+		return http.HttpResponse('Here is an OAuth Authorize link: <a href="{}"></a>'.format(request.oauth.get_authorize_redirect()))
