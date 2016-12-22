@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'oauth2client.contrib.django_util',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -119,3 +120,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+GOOGLE_OAUTH2_CLIENT_ID = '49069636894-1n6he4hfnt3mfqbbl0eeuq984obbipsv.apps.googleusercontent.com'
+
+GOOGLE_OAUTH2_CLIENT_SECRET = 'vESCMuhQSOAGkxkMzhSo5JTn'
+
+GOOGLE_OAUTH2_SCOPES = (
+    'email', 'profile')
