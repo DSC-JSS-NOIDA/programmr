@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django import http
 from .models import Users
+from .models import Questions
+from .models import Submission
 from .forms import ProfileForm
 from django.http import *
 from oauth2client.contrib.django_util import decorators
@@ -53,35 +55,11 @@ def profile(request):
 
 def dashboard(request):
 
-	queryset_list=Users.objects.all()
-
-	query=request.GET.get("q")
-	if query:
-		queryset_list=queryset_list.filter(title__icontains=query)
-	paginator = Paginator(queryset_list, 10) # Show 25 contacts per page
-	page_request_var="page"
-	page = request.GET.get(page_request_var)
-
-	try:
-		queryset = paginator.page(page)
-	except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-		queryset = paginator.page(1)
-	except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-         queryset = paginator.page(paginator.num_pages)
-
-   
-    
-    
-
+	queryset=Questions.objects.all()
 	context={
 	     "object_list":queryset,
-	     "title": "List",
+	     
 	}
-	
-    
-
 	return render(request,"dashboard.html",context)
 
 def rules(request):
@@ -92,12 +70,12 @@ def announcements(request):
 	
 
 def question_detail(request,id=None):
-	instance=get_object_or_404(Users,id=id)
-	share_string=quote_plus(instance.content)
+	instance=get_object_or_404(Questions,id=id)
+	
+	
 	context={
-	    "title":instance.title,
-	    "instance":instance,
-	    "share_string":share_string,
+	      "instance":instance,
+	    
 	 }
 	return render(request,"question_detail.html",context)
 

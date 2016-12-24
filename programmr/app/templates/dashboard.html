@@ -5,16 +5,8 @@
 
 {% for obj in object_list %}
 
-<div class="row">
-  <div class="col-sm-12">
-    <div class="thumbnail">
-      <div class="caption">
-        <h3><a href='/Questions/{{ obj.id }}/'>{{ obj.title }}</a></h3>
-        <p>{{ obj.detail | linebreaks | truncatechars:120 }}</p>
-        <p><a href="/Questions/{{ obj.id }}/" class="btn btn-primary" role="button">View</a> </p>
-      </div>
-    </div>
-  </div>
-</div>
-{% endfor %}
+Question : {{ obj.title }}<br /><br />
+Total Submission : <br /><br />
+Accuracy : <br /><br />
 
+{% endfor %}
