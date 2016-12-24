@@ -14,6 +14,8 @@ class Users(models.Model):
 	timestamp=models.DateTimeField(auto_now=True,auto_now_add=False)
 	total_score=models.CharField(max_length=120)
 
+def __unicode__(self):
+		return self.name
 
 class Questions(models.Model):
 	title=models.CharField(max_length=120)
@@ -25,6 +27,9 @@ class Questions(models.Model):
 	testcase_input=models.TextField()
 	testcase_output=models.TextField()
 
+def __unicode__(self):
+		return self.title
+
 
 class Submission(models.Model):
 	user_ID=models.CharField(max_length=120)
@@ -33,6 +38,8 @@ class Submission(models.Model):
 	source_code_URL=models.URLField(max_length=120)
 	date=models.DateTimeField(auto_now=True,auto_now_add=False)
 
+def __unicode__(self):
+		return self.status
 
 
 

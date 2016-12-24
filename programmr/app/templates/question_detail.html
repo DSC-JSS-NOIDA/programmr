@@ -1,0 +1,29 @@
+{% include "header.html" %}
+{% include "footer.html" %}
+
+{% block head_title %}{{ instance.title }} | {{ block.super }}{% endblock head_title %}
+	
+
+
+{% block content %}
+
+<div class='col-sm-6 col-sm-offset-3'>
+
+
+<h1>{{ title }}</h1>
+
+<p>Content: {{ instance.user }}</p>
+<br />
+<br />
+
+<div class="row">
+	<div class="col-md-10 col-md-offset-1">
+{{ instance.content | linebreaks}}<br />
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
