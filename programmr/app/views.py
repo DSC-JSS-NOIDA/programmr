@@ -1,9 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django import http
-from .models import Users
-from .models import Questions
-from .models import Submission
-from .forms import ProfileForm
+from models import *
+from forms import ProfileForm
 from django.http import *
 from oauth2client.contrib.django_util import decorators
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -55,12 +53,12 @@ def profile(request):
 
 def dashboard(request):
 
-	queryset=Questions.objects.all()
-	context={
-	     "object_list":queryset,
-	}
-	return Questions.objects.raw('select a.*, count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_id and b.status=0 group by a.id')
-	return render(request,"dashboard.html",context)
+	print Questions._meta.db_table
+	queryset = Questions.objects.raw('select a.*, count(*) as totalsub from app_questions a, app_submission b where a.id=b.question_id and b.status=0 group by a.id')
+	return HttpResponse(queryset)
+
+
+
 
 def rules(request):
 	return render(request,"rules.html")

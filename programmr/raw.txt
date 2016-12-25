@@ -1,0 +1,1 @@
+Questions.objects.raw('select a.*, count(*) as totalsub from Questions a, Submission b where a.id=b.question_id and b.status=0 group by a.id')
