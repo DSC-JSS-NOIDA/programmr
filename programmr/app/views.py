@@ -58,7 +58,6 @@ def dashboard(request):
 	queryset=Questions.objects.all()
 	context={
 	     "object_list":queryset,
-	     
 	}
 	return render(request,"dashboard.html",context)
 
