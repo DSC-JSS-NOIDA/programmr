@@ -59,6 +59,7 @@ def dashboard(request):
 	context={
 	     "object_list":queryset,
 	}
+	return Questions.objects.raw('select a.*, count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_id and b.status=0 group by a.id')
 	return render(request,"dashboard.html",context)
 
 def rules(request):
