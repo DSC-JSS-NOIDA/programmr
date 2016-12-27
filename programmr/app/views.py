@@ -4,8 +4,7 @@ from models import *
 from forms import ProfileForm
 from django.http import *
 from oauth2client.contrib.django_util import decorators
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from urllib import quote_plus
+
 # Create your views here.
 def login(request):
 	return render(request, 'login.html')
@@ -30,7 +29,7 @@ def get_profile_optional(request):
 
 
 def profile(request):
-	email="nooreenharoon@gmail.com"
+	
 	
 	form=ProfileForm(request.POST or None, request.FILES or None)
 	if form.is_valid():
@@ -51,11 +50,11 @@ def profile(request):
 
 
 
-def dashboard(request):
-
-	print Questions._meta.db_table
-	queryset = Questions.objects.raw('select a.*, count(*) as totalsub from app_questions a, app_submission b where a.id=b.question_id and b.status=0 group by a.id')
-	return HttpResponse(queryset)
+#def question_list(request):
+	
+	#print Questions._meta.db_table
+ 	#queryset = Questions.objects.raw('select a.*, count(*) as totalsub from app_questions a, app_submission b where a.id=b.question_id and b.status=0 group by a.id')
+	#return HttpResponse(queryset)
 
 
 
@@ -76,4 +75,17 @@ def question_detail(request,id=None):
 	    
 	 }
 	return render(request,"question_detail.html",context)
+
+def dashboard(request):
+	queryset=Questions.objects.all()
+	qset = Questions.objects.raw('select count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_ID group by b.question_ID')
+	accuracy=Questions.objects.raw('select count(*) as accuracy from Questionss a, Submissions b where a.id=b.question_ID and b.status=0 group by b.question_ID')
+ 	context={
+ 	     "object_list":queryset,
+ 	     "Sub":qset,
+		 "acc":accuracy,     
+ 	}
+
+ 	return render(request,"dashboard.html",context)
+ 
 
