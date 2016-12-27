@@ -12,8 +12,9 @@ urlpatterns = [
     url(r'^dashboard/$',views.dashboard,name='dashboard'),
     url(r'^rules/$',views.rules,name='rules'),
 	url(r'^announcements/$',views.announcements,name='announcements'),
-    url(r'^question_detail/(?P<id>[0-9]+)/$',views.question_detail,name='question_detail'),
+	url(r'^question_detail/(?P<id>[0-9]+)/$',views.question_detail,name='question_detail'),
     #url(r'^question_list/$',views.question_list,name='question_list'),
+    url(r'^submission/$',views.submission,name='submission'),
 
     
 

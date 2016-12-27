@@ -89,3 +89,28 @@ def dashboard(request):
  	return render(request,"dashboard.html",context)
  
 
+def submission(request):
+
+	#! -*- coding: utf-8 -*-
+
+	import requests
+
+	# constants
+	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
+	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
+	source = "print 'Hello World'"
+
+	data = {
+    	'client_secret': CLIENT_SECRET,
+    	'async': 0,
+    	'source': source,
+    	'lang': "PYTHON",
+    	'time_limit': 5,
+    	'memory_limit': 262144,
+	}
+
+	r = requests.post(RUN_URL, data=data)
+	context={
+	"object":r.json(),
+	}
+	return render(request,"submission.html",context)

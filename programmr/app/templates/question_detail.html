@@ -46,11 +46,25 @@
 </div>
 
 {% block content %}
+
+
 <center><h3>Code Editor</h3></center>
 <center>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("select").change(function(){
+    
+    $("select option:selected").each(function(){
+      var lang=$(this).text();
+      console.log(lang)
+    });
+  });
+});
+
+</script>
   <!-- <div class='col-sm-6 col-sm-offset-3'> -->
-<form method='POST' action='' enctype='multipart/form-data'>{% csrf_token %}
- <select>
+<form method='POST' action='/submission' enctype='multipart/form-data'>{% csrf_token %}
+ <select class="language">
   <option value="Select">Select</option>
   <option value="C">C</option>
   <option value="C++">C++</option>
@@ -69,7 +83,7 @@
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
-    editor.session.setMode("ace/mode/html");
+    //editor.session.setMode("ace/mode/"+lang);
     // editor.resize();
     editor.setAutoScrollEditorIntoView(true);
     editor.setOption("maxLines", 30);
