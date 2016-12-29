@@ -1,5 +1,4 @@
 {% include "header.html" %}
-{% include "footer.html" %}
 
 <center>User Dashboard</center>
 
@@ -8,7 +7,12 @@
 {% for obj in object_list %}
 
 Question : {{ obj.title }}<br /><br />
-Total Submission : <br /><br />
-Accuracy : <br /><br />
+Total Submission : {{ Sub }}<br /><br />
+Accuracy : <br />{{ acc }}<br />
 
 {% endfor %}
+{% include "footer.html" %}
+
+
+
+

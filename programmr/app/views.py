@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from models import *
 from forms import ProfileForm
 from django.http import *
@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 
@@ -76,7 +77,7 @@ def logout_view(request):
 
 
 def profile(request):
-	email="nooreenharoon@gmail.com"
+	
 	
 	form=ProfileForm(request.POST or None, request.FILES or None)
 	if form.is_valid():
@@ -108,6 +109,7 @@ def dashboard(request):
 
 
 
+
 def rules(request):
 	return render(request,"rules.html")
 	
@@ -125,3 +127,41 @@ def question_detail(request,id=None):
 	 }
 	return render(request,"question_detail.html",context)
 
+def dashboard(request):
+	queryset=Questions.objects.all()
+	qset = Questions.objects.raw('select count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_ID group by b.question_ID')
+	accuracy=Questions.objects.raw('select count(*) as accuracy from Questionss a, Submissions b where a.id=b.question_ID and b.status=0 group by b.question_ID')
+ 	context={
+ 	     "object_list":queryset,
+ 	     "Sub":qset,
+		 "acc":accuracy,     
+ 	}
+
+ 	return render(request,"dashboard.html",context)
+ 
+
+def submission(request):
+
+	#! -*- coding: utf-8 -*-
+
+	import requests
+
+	# constants
+	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
+	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
+	source = "print 'Hello World'"
+
+	data = {
+    	'client_secret': CLIENT_SECRET,
+    	'async': 0,
+    	'source': source,
+    	'lang': "PYTHON",
+    	'time_limit': 5,
+    	'memory_limit': 262144,
+	}
+
+	r = requests.post(RUN_URL, data=data)
+	context={
+	"object":r.json(),
+	}
+	return render(request,"submission.html",context)
