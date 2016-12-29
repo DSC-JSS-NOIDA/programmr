@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
-    'oauth2client.contrib.django_util',
 ]
 
 MIDDLEWARE = [
@@ -122,9 +121,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-GOOGLE_OAUTH2_CLIENT_ID = '49069636894-1n6he4hfnt3mfqbbl0eeuq984obbipsv.apps.googleusercontent.com'
+LOGIN_URL = '/login_page'
 
-GOOGLE_OAUTH2_CLIENT_SECRET = 'vESCMuhQSOAGkxkMzhSo5JTn'
 
-GOOGLE_OAUTH2_SCOPES = (
-    'email', 'profile')
+
+GOOGLE_PLUS_APP_ID = '49069636894-1n6he4hfnt3mfqbbl0eeuq984obbipsv.apps.googleusercontent.com'
+GOOGLE_PLUS_APP_SECRET = 'vESCMuhQSOAGkxkMzhSo5JTn'

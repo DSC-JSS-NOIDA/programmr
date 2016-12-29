@@ -5,10 +5,18 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Users(models.Model):
-	
+class GoogleProfile(models.Model):
+
 	user = models.ForeignKey(User)
 	google_user_id = models.CharField(max_length=100)
+	access_token = models.CharField(max_length=100)
+	profile_url = models.CharField(max_length=100)
+
+
+
+class UserProfile(models.Model):
+	
+	user = models.ForeignKey(User)
 	name=models.CharField(max_length=120)
 	email_ID=models.EmailField(max_length=200)
 	avatar=models.URLField(max_length=120)
@@ -23,7 +31,7 @@ class Users(models.Model):
 
 
 
-class Questions(models.Model):
+class Question(models.Model):
 	title=models.CharField(max_length=120)
 	detail=models.TextField()
 	constraint=models.CharField(max_length=120)
