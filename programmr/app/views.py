@@ -106,6 +106,27 @@ def profile(request):
 
 
 
+def dashboard(request):
+	
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
+	
+	user_detail = UserProfile.objects.get(user=request.user)
+	queryset=Question.objects.all()
+ 	context={ "user": user_detail, "questions":queryset }
+	
+	return render(request, "dashboard.html", context)
+
+
+
+def question_detail(request,id=None):
+	
+	instance=get_object_or_404(Question,id=id)
+	
+	context={ "question": instance }
+	return render(request, "question_detail.html", context)
+
+
 
 def rules(request):
 	return render(request,"rules.html")
@@ -115,35 +136,6 @@ def rules(request):
 def announcements(request):
 	return render(request,"announcements.html")
 	
-
-
-def question_detail(request,id=None):
-	instance=get_object_or_404(Questions,id=id)
-	
-	
-	context={
-	      "instance":instance,
-	    
-	 }
-	return render(request,"question_detail.html",context)
-
-
-
-def dashboard(request):
-	
-	if not request.user.is_active:
-		return HttpResponseRedirect(reverse_lazy('login_page'))
-	queryset=Question.objects.all()
-	qset = Question.objects.raw('select count(*) as totalsub from app_question a, app_submission b where a.id=b.question_ID group by b.question_ID')
-	accuracy=Question.objects.raw('select count(*) as accuracy from app_question a, app_submission b where a.id=b.question_ID and b.status=0 group by b.question_ID')
- 	context={
- 	     "object_list":queryset,
- 	     "Sub":qset,
-		 "acc":accuracy,     
- 	}
-
- 	return render(request,"dashboard.html",context)
- 
 
 
 def submission(request):

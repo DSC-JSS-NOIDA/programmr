@@ -12,6 +12,8 @@ class GoogleProfile(models.Model):
 	access_token = models.CharField(max_length=100)
 	profile_url = models.CharField(max_length=100)
 
+	def __unicode__(self):
+		return self.user.username
 
 
 class UserProfile(models.Model):
