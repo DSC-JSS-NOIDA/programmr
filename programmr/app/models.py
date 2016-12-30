@@ -18,11 +18,11 @@ class UserProfile(models.Model):
 	
 	user = models.ForeignKey(User)
 	name=models.CharField(max_length=120)
-	email_ID=models.EmailField(max_length=200)
+	email_ID=models.EmailField(max_length=200, blank=True)
 	avatar=models.URLField(max_length=120)
-	year=models.CharField(max_length=120)
-	branch=models.CharField(max_length=120)
-	mobile_no=models.CharField(max_length=120)
+	year=models.CharField(max_length=120, blank=True)
+	branch=models.CharField(max_length=120, blank=True)
+	mobile_no=models.CharField(max_length=120, blank=True)
 	timestamp=models.DateTimeField(auto_now=True,auto_now_add=False)
 	total_score=models.CharField(max_length=120)
 

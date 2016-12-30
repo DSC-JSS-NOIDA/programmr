@@ -39,9 +39,9 @@ def google_login(request):
 	state = request.GET['state']
 	getGoogle.get_access_token(code, state)
 	userInfo = getGoogle.get_user_info()
-	print userInfo
 	username = userInfo['given_name'] + userInfo['family_name']
 	password = 'password'
+	new = None
 
 	try:
 		user = User.objects.get(username=username)
@@ -90,21 +90,20 @@ def logout_view(request):
 
 
 def profile(request):
-	
-	
-	form = ProfileForm(request.POST or None, request.FILES or None)
-	
-	if form.is_valid():
 
-		instance = form.save(commit=False)
-		instance.save()
-		return redirect("app:dashboard")
-	else:
-		context={
-   			"form": form,
-		}
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
 
-	return render(request,"profile.html",context)
+	a = UserProfile.objects.get(user=request.user)
+	f = ProfileForm(request.POST, instance=a)
+	
+	if request.method == 'POST':
+		print "saved!"
+		f.save()
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+
+	return render(request, 'profile.html', {'form': f, 'user': a})
+
 
 
 
