@@ -32,6 +32,7 @@ class UserProfile(models.Model):
 
 
 class Question(models.Model):
+	
 	title=models.CharField(max_length=120)
 	detail=models.TextField()
 	constraint=models.CharField(max_length=120)
@@ -47,6 +48,7 @@ class Question(models.Model):
 
 
 class Submission(models.Model):
+	
 	user_ID=models.CharField(max_length=120)
 	question_ID=models.CharField(max_length=120)
 	status=models.CharField(max_length=120)

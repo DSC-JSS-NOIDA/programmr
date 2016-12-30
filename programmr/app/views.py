@@ -21,6 +21,7 @@ def login_page(request):
 	
 	if request.user.is_active:
 		return render(request, 'dashboard.html')
+	
 	return render(request, 'login.html')
 
 
@@ -38,11 +39,13 @@ def google_login(request):
 	state = request.GET['state']
 	getGoogle.get_access_token(code, state)
 	userInfo = getGoogle.get_user_info()
+	print userInfo
 	username = userInfo['given_name'] + userInfo['family_name']
 	password = 'password'
 
 	try:
 		user = User.objects.get(username=username)
+	
 	except User.DoesNotExist:
 		new_user = User.objects.create_user(username)
 		new_user.set_password(password)
@@ -51,16 +54,28 @@ def google_login(request):
 		try:
 			profile = GoogleProfile.objects.get(user=new_user.id)
 			profile.access_token = getGoogle.access_token
+		
 		except:
 			profile = GoogleProfile()
 			profile.user = new_user
 			profile.google_user_id = userInfo['id']
 			profile.access_token = getGoogle.access_token
 			profile.profile_url = userInfo['link']
+			new = True
+			user_profile = UserProfile()
+			user_profile.user = new_user
+			user_profile.name = username
+			user_profile.avatar = userInfo['picture']
+		
 		profile.save()
+		user_profile.save()
 	
 	user = authenticate(username=username, password=password)
 	login(request, user)
+	
+	if new == True:
+		return HttpResponseRedirect(reverse_lazy('profile'))
+	
 	return HttpResponseRedirect(reverse_lazy('dashboard'))
 
 
@@ -69,53 +84,39 @@ def logout_view(request):
 
 	if request.user.is_active:
 		logout(request)
-		return HttpResponseRedirect(reverse_lazy('login_page'))
-	else:
-		return HttpResponseRedirect(reverse_lazy('dashboard'))
-
+	
+	return HttpResponseRedirect(reverse_lazy('login_page'))
 
 
 
 def profile(request):
 	
 	
-	form=ProfileForm(request.POST or None, request.FILES or None)
+	form = ProfileForm(request.POST or None, request.FILES or None)
+	
 	if form.is_valid():
-		instance=form.save(commit=False)
+
+		instance = form.save(commit=False)
 		instance.save()
-        
-		
 		return redirect("app:dashboard")
-		
 	else:
-	 	
 		context={
-	     "form": form,
-	}
-	
-	
+   			"form": form,
+		}
+
 	return render(request,"profile.html",context)
-
-
-
-
-def dashboard(request):
-
-	if not request.user.is_active:
-		return HttpResponseRedirect(reverse_lazy('login_page'))
-	queryset = Question.objects.raw('select a.*, count(*) as totalsub from app_questions a, app_submission b where a.id=b.question_id and b.status=0 group by a.id')
-	return render(request, 'dashboard.html')
-
-
 
 
 
 def rules(request):
 	return render(request,"rules.html")
+
+
 	
 def announcements(request):
 	return render(request,"announcements.html")
 	
+
 
 def question_detail(request,id=None):
 	instance=get_object_or_404(Questions,id=id)
@@ -127,10 +128,15 @@ def question_detail(request,id=None):
 	 }
 	return render(request,"question_detail.html",context)
 
+
+
 def dashboard(request):
-	queryset=Questions.objects.all()
-	qset = Questions.objects.raw('select count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_ID group by b.question_ID')
-	accuracy=Questions.objects.raw('select count(*) as accuracy from Questionss a, Submissions b where a.id=b.question_ID and b.status=0 group by b.question_ID')
+	
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
+	queryset=Question.objects.all()
+	qset = Question.objects.raw('select count(*) as totalsub from app_question a, app_submission b where a.id=b.question_ID group by b.question_ID')
+	accuracy=Question.objects.raw('select count(*) as accuracy from app_question a, app_submission b where a.id=b.question_ID and b.status=0 group by b.question_ID')
  	context={
  	     "object_list":queryset,
  	     "Sub":qset,
@@ -139,6 +145,7 @@ def dashboard(request):
 
  	return render(request,"dashboard.html",context)
  
+
 
 def submission(request):
 
