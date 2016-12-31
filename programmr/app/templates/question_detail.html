@@ -1,55 +1,41 @@
 {% include "header.html" %}
 
-
-	
-
-
-
-
-<div class='col-sm-6 col-sm-offset-3'>
-
-
-<h1>Title : {{ instance.title }}</h1>
-
-
-<br />
-<br />
-
-<div class="row">
-	<div class="col-md-10 col-md-offset-1">
-    Question : {{ instance.detail | linebreaks }}<br /><br />
-    </div>
-</div>
-
-<div class="row">
-	<div class="col-md-10 col-md-offset-1">
-	Constraint : {{ instance.constraint }}<br /><br />
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-10 col-md-offset-1">
-	Input Format : {{ instance.input_format }}<br /><br />
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-10 col-md-offset-1">
-	Output Format: {{ instance.output_format }}<br /><br />
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-10 col-md-offset-1">
-	Sample TestCase : {{ instance.sample_testcase | safe | linebreaks }}<br /><br />
-	</div>
-</div>
-
 {% block content %}
 
 
-<center><h3>Code Editor</h3></center>
-<center>
+<h3>{{ question.title }}</h3>
+
+
+<br />
+<br />
+
+<p>{{ question.detail }}</p>
+
+<br />
+<br />
+
+<p>{{ question.constraint }}</p>
+
+<br />
+<br />
+
+<p>{{ question.input_format }}</p>
+
+<br />
+<br />
+
+<p>{{ question.output_format }}</p>
+
+<br />
+<br />
+
+<p>{{ question.sample_testcase | safe | linebreaks }}</p>
+
+<br />
+<br />
+
+<h3>Code Editor</h3>
+
 <script type="text/javascript">
 $(document).ready(function(){
   $("select").change(function(){
@@ -63,6 +49,7 @@ $(document).ready(function(){
 
 </script>
   <!-- <div class='col-sm-6 col-sm-offset-3'> -->
+
 <form method='POST' action='/submission/' enctype='multipart/form-data'>{% csrf_token %}
  <select class="language" name="lang">
   <option value="Select">Select</option>
@@ -77,14 +64,14 @@ $(document).ready(function(){
 <input type='submit' class='btn btn-default' value='Submit' />
 </form>
 <!-- </div> -->
-</center>
+
 
 <!-- Embed Ace-C9 editor script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
-    //editor.session.setMode("ace/mode/"+lang);
+    editor.session.setMode("ace/mode/"+lang);
     // editor.resize();
     
     editor.setAutoScrollEditorIntoView(true);

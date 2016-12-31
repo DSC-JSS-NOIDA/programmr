@@ -1,13 +1,12 @@
 from django.contrib import admin
 
 # Register your models here.
-from app.models import Users
-from app.models import Questions
-from app.models import Submission
+from app.models import *
 
 
-admin.site.register(Users)
-admin.site.register(Questions)
+admin.site.register(UserProfile)
+admin.site.register(GoogleProfile)
+admin.site.register(Question)
 admin.site.register(Submission)
 
 

@@ -5,16 +5,26 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Users(models.Model):
-	
+class GoogleProfile(models.Model):
+
 	user = models.ForeignKey(User)
 	google_user_id = models.CharField(max_length=100)
+	access_token = models.CharField(max_length=100)
+	profile_url = models.CharField(max_length=100)
+
+	def __unicode__(self):
+		return self.user.username
+
+
+class UserProfile(models.Model):
+	
+	user = models.ForeignKey(User)
 	name=models.CharField(max_length=120)
-	email_ID=models.EmailField(max_length=200)
+	email_ID=models.EmailField(max_length=200, blank=True)
 	avatar=models.URLField(max_length=120)
-	year=models.CharField(max_length=120)
-	branch=models.CharField(max_length=120)
-	mobile_no=models.CharField(max_length=120)
+	year=models.CharField(max_length=120, blank=True)
+	branch=models.CharField(max_length=120, blank=True)
+	mobile_no=models.CharField(max_length=120, blank=True)
 	timestamp=models.DateTimeField(auto_now=True,auto_now_add=False)
 	total_score=models.CharField(max_length=120)
 
@@ -23,7 +33,8 @@ class Users(models.Model):
 
 
 
-class Questions(models.Model):
+class Question(models.Model):
+	
 	title=models.CharField(max_length=120)
 	detail=models.TextField()
 	constraint=models.CharField(max_length=120)
@@ -39,6 +50,7 @@ class Questions(models.Model):
 
 
 class Submission(models.Model):
+	
 	user_ID=models.CharField(max_length=120)
 	question_ID=models.CharField(max_length=120)
 	status=models.CharField(max_length=120)

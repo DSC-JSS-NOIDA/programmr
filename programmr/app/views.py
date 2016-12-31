@@ -1,96 +1,145 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django import http
+from django.urls import reverse_lazy
 from models import *
 from forms import ProfileForm
 from django.http import *
-from oauth2client.contrib.django_util import decorators
-from django.db import connection
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from urllib import quote_plus
+from google_script import *
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
+
+
 # Create your views here.
-def login(request):
+
+getGoogle = GooglePlus(settings.GOOGLE_PLUS_APP_ID, settings.GOOGLE_PLUS_APP_SECRET)
+
+
+def login_page(request):
+	
+	if request.user.is_active:
+		return render(request, 'dashboard.html')
+	
 	return render(request, 'login.html')
 
 
 
-@decorators.oauth_required
+def login_google(request):
+
+	google_url = getGoogle.get_authorize_url()
+	return HttpResponseRedirect(google_url)
+
+
+
 def google_login(request):
-	resp, content = request.oauth.http.request('https://www.googleapis.com/plus/v1/people/me')
-	return http.HttpResponse(content)
+
+	code = request.GET['code']
+	state = request.GET['state']
+	getGoogle.get_access_token(code, state)
+	userInfo = getGoogle.get_user_info()
+	username = userInfo['given_name'] + userInfo['family_name']
+	password = 'password'
+	new = None
+
+	try:
+		user = User.objects.get(username=username)
+	
+	except User.DoesNotExist:
+		new_user = User.objects.create_user(username)
+		new_user.set_password(password)
+		new_user.save()
+
+		try:
+			profile = GoogleProfile.objects.get(user=new_user.id)
+			profile.access_token = getGoogle.access_token
+		
+		except:
+			profile = GoogleProfile()
+			profile.user = new_user
+			profile.google_user_id = userInfo['id']
+			profile.access_token = getGoogle.access_token
+			profile.profile_url = userInfo['link']
+			new = True
+			user_profile = UserProfile()
+			user_profile.user = new_user
+			user_profile.name = username
+			user_profile.avatar = userInfo['picture']
+		
+		profile.save()
+		user_profile.save()
+	
+	user = authenticate(username=username, password=password)
+	login(request, user)
+	
+	if new == True:
+		return HttpResponseRedirect(reverse_lazy('profile'))
+	
+	return HttpResponseRedirect(reverse_lazy('dashboard'))
 
 
 
-@decorators.oauth_enabled
-def get_profile_optional(request):
-	if request.oauth.has_credentials():
-		return http.HttpResponse('User email: {}'.format(request.oauth.credentials.id_token['email']))
-	else:
-		return http.HttpResponse('Here is an OAuth Authorize link: <a href="{}"></a>'.format(request.oauth.get_authorize_redirect()))
+def logout_view(request):
 
+	if request.user.is_active:
+		logout(request)
+	
+	return HttpResponseRedirect(reverse_lazy('login_page'))
 
 
 
 def profile(request):
+
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
+
+	a = UserProfile.objects.get(user=request.user)
+	f = ProfileForm(request.POST, instance=a)
 	
-	
-	form=ProfileForm(request.POST or None, request.FILES or None)
-	if form.is_valid():
-		instance=form.save(commit=False)
-		instance.save()
-        
-		
-		return redirect("app:dashboard")
-		
-	else:
-	 	
-		context={
-	     "form": form,
-	}
-	
-	
-	return render(request,"profile.html",context)
+	if request.method == 'POST':
+		print "saved!"
+		f.save()
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+
+	return render(request, 'profile.html', {'form': f, 'user': a})
 
 
 
-#def question_list(request):
+def dashboard(request):
 	
-	#print Questions._meta.db_table
- 	#queryset = Questions.objects.raw('select a.*, count(*) as totalsub from app_questions a, app_submission b where a.id=b.question_id and b.status=0 group by a.id')
-	#return HttpResponse(queryset)
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
+	
+	user_detail = UserProfile.objects.get(user=request.user)
+	queryset=Question.objects.all()
+ 	context={ "user": user_detail, "questions":queryset }
+	
+	return render(request, "dashboard.html", context)
 
+
+
+def question_detail(request,id=None):
+	
+	instance=get_object_or_404(Question,id=id)
+	
+	context={ "question": instance }
+	return render(request, "question_detail.html", context)
 
 
 
 def rules(request):
 	return render(request,"rules.html")
+
+
 	
 def announcements(request):
 	return render(request,"announcements.html")
 	
 
-def question_detail(request,id=None):
-	instance=get_object_or_404(Questions,id=id)
-	
-	
-	context={
-	      "instance":instance,
-	    
-	 }
-	return render(request,"question_detail.html",context)
 
-def dashboard(request):
-	queryset=Questions.objects.all()
-	qset=Questions.objects.raw("select count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_ID group by b.question_id")
-		
-	accuracy=Questions.objects.raw("select count(*) as accuracy from Questionss a, Submissions b where a.id=b.question_ID and b.status=0 group by b.question_ID;")
-	addition=Questions.objects.filter(title="Diagonal Difference") 	
- 	context={
- 	     "object_list":queryset,
- 	     "Sub":qset,
-		 "acc":accuracy,
-		 "sum":addition,     
- 	}
 
- 	return render(request,"dashboard.html",context)
- 
 
 def submission(request):
 
@@ -104,7 +153,7 @@ def submission(request):
 	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
 	# source = "print 'Hello World'"
 	lang = request.POST['lang']
-	source = request.POST
+	source = request.POST['source']
 
 	data = {
     	'client_secret': CLIENT_SECRET,
@@ -118,7 +167,9 @@ def submission(request):
 	r = requests.post(RUN_URL, data=data)
 	context={
 	"object":r.json(),
-	"obj":source,
+	"language":lang,
+	"source":source,
+
 	}
 
 
