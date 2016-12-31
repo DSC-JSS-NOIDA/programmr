@@ -4,7 +4,7 @@ from models import *
 from forms import ProfileForm
 from django.http import *
 from oauth2client.contrib.django_util import decorators
-
+from django.db import connection
 # Create your views here.
 def login(request):
 	return render(request, 'login.html')
@@ -78,12 +78,15 @@ def question_detail(request,id=None):
 
 def dashboard(request):
 	queryset=Questions.objects.all()
-	qset = Questions.objects.raw('select count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_ID group by b.question_ID')
-	accuracy=Questions.objects.raw('select count(*) as accuracy from Questionss a, Submissions b where a.id=b.question_ID and b.status=0 group by b.question_ID')
+	qset=Questions.objects.raw("select count(*) as totalsub from Questionss a, Submissions b where a.id=b.question_ID group by b.question_id")
+		
+	accuracy=Questions.objects.raw("select count(*) as accuracy from Questionss a, Submissions b where a.id=b.question_ID and b.status=0 group by b.question_ID;")
+	addition=Questions.objects.filter(title="Diagonal Difference") 	
  	context={
  	     "object_list":queryset,
  	     "Sub":qset,
-		 "acc":accuracy,     
+		 "acc":accuracy,
+		 "sum":addition,     
  	}
 
  	return render(request,"dashboard.html",context)
@@ -93,18 +96,21 @@ def submission(request):
 
 	#! -*- coding: utf-8 -*-
 
+
 	import requests
 
 	# constants
 	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
 	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
-	source = "print 'Hello World'"
+	# source = "print 'Hello World'"
+	lang = request.POST['lang']
+	source = request.POST
 
 	data = {
     	'client_secret': CLIENT_SECRET,
     	'async': 0,
     	'source': source,
-    	'lang': "PYTHON",
+    	'lang': lang,
     	'time_limit': 5,
     	'memory_limit': 262144,
 	}
@@ -112,5 +118,8 @@ def submission(request):
 	r = requests.post(RUN_URL, data=data)
 	context={
 	"object":r.json(),
+	"obj":source,
 	}
+
+
 	return render(request,"submission.html",context)
