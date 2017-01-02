@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
+
 # Create your views here.
 
 getGoogle = GooglePlus(settings.GOOGLE_PLUS_APP_ID, settings.GOOGLE_PLUS_APP_SECRET)
@@ -138,22 +139,27 @@ def announcements(request):
 	
 
 
+
+
 def submission(request):
 
 	#! -*- coding: utf-8 -*-
+
 
 	import requests
 
 	# constants
 	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
 	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
-	source = "print 'Hello World'"
+	# source = "print 'Hello World'"
+	lang = request.POST['lang']
+	source = request.POST['source']
 
 	data = {
     	'client_secret': CLIENT_SECRET,
     	'async': 0,
     	'source': source,
-    	'lang': "PYTHON",
+    	'lang': lang,
     	'time_limit': 5,
     	'memory_limit': 262144,
 	}
@@ -161,5 +167,10 @@ def submission(request):
 	r = requests.post(RUN_URL, data=data)
 	context={
 	"object":r.json(),
+	"language":lang,
+	"source":source,
+
 	}
+
+
 	return render(request,"submission.html",context)
