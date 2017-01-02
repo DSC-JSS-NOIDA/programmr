@@ -90,3 +90,6 @@ ENV/
 
 #oAuth credentials
 config.py
+
+# Database
+.sqlite3

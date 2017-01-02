@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required
 from urllib import urlopen
 
 
-
 # Create your views here.
 
 getGoogle = GooglePlus(settings.GOOGLE_PLUS_APP_ID, settings.GOOGLE_PLUS_APP_SECRET)
@@ -159,10 +158,17 @@ def submission(request,id=None):
 	# constants
 	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
 	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
-	# source = "print 'Hello World'"
+
 	lang = request.POST['lang']
 	source = request.POST['source']
-	#source = "#include<stdio.h><br>int main(){printf('A');return 0;}"
+
+
+	# if(source==''||lang==''):
+	# 	context = {
+	# 		"error":"Source Code can not be empty"
+	# 	}
+	# 	return render(request,"error.html",context)
+
 	data = {
     	'client_secret': CLIENT_SECRET,
     	'async': 0,
@@ -189,26 +195,22 @@ def submission(request,id=None):
 		output = r.json()
 		output=output['run_status']
 		output=output['output']
-		if(output=="instance.testcase_output"):
+		# output=output.encode('ascii','ignore')
+		if(output==instance.testcase_output):
 			result=4
+			# correct answer
 		else:
 			result=3
+			# wroing answer
 
 	
-
-	
-
 	context={
-	
-	
-	
-    "object":r.json(),
+	"object":r.json(),
     "data":result,
 	"language":lang,
 	"source":source,
-	
-	
-
+	"op":instance.testcase_output,
+	"op1":output,
 	}
 	
 	return render(request,"submission.html",context)

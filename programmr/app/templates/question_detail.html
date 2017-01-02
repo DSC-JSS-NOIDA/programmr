@@ -37,18 +37,6 @@
 
 <h3>Code Editor</h3>
 
-<script type="text/javascript">
-$(document).ready(function(){
-  $("select").change(function(){
-    
-    $("select option:selected").each(function(){
-      var lang=$(this).text();
-      console.log(lang)
-    });
-  });
-});
-
-</script>
   <!-- <div class='col-sm-6 col-sm-offset-3'> -->
 
 <form method='POST' action='/submission/' enctype='multipart/form-data'>{% csrf_token %}
@@ -71,15 +59,26 @@ $(document).ready(function(){
 <!-- Embed Ace-C9 editor script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+  var lang = "C";
+    $(document).ready(function(){
+        $("select").change(function(){
+          $("select option:selected").each(function(){
+            lang=$(this).text();
+            console.log(lang);
+          });
+        });
+    });
+
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
-    //editor.session.setMode("ace/mode/"+lang);
+    editor.session.setMode("ace/mode/"+lang);
     // editor.resize();
     
     editor.setAutoScrollEditorIntoView(true);
     editor.setOption("maxLines", 30);
     editor.setOption("minLines", 12);
     editor.getSession().on("change", function () {
+      console.log(1);
       $(".source").val(editor.getSession().getValue());
     });
 </script>
