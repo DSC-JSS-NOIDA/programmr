@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from models import *
@@ -150,10 +151,8 @@ def submission(request,id=None):
 	#! -*- coding: utf-8 -*-
 	#import json
 	#from pprint import pprint
-	id=request.POST['id']
-	instance=get_object_or_404(Question,id=id)
-	
-	import requests
+	id = request.POST['id']
+	instance = get_object_or_404(Question, id=id)
 
 	# constants
 	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
@@ -184,6 +183,7 @@ def submission(request,id=None):
 	status = r.json()
 	status=status['run_status']
 	status=status['status']
+	output = None
 	
 	if(status=="CE"):
 		result=0
@@ -196,12 +196,12 @@ def submission(request,id=None):
 		output=output['run_status']
 		output=output['output']
 		# output=output.encode('ascii','ignore')
-		if(output==instance.testcase_output):
-			result=4
+		if str(output) == str(instance.testcase_output+'\n'):
+			result = 4
 			# correct answer
 		else:
 			result=3
-			# wroing answer
+			# wrong answer
 
 	
 	context={
