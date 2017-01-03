@@ -196,12 +196,13 @@ def submission(request,id=None):
 		output=output['run_status']
 		output=output['output']
 		# output=output.encode('ascii','ignore')
-		if(output==instance.testcase_output):
+		output=str(output)
+		if(output=="instance.testcase_output"):
 			result=4
 			# correct answer
 		else:
 			result=3
-			# wroing answer
+		# wroing answer
 
 	
 	context={
