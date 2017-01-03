@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from models import *
@@ -126,6 +127,9 @@ def dashboard(request):
 
 def question_detail(request,id=None):
 	
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
+
 	instance=get_object_or_404(Question,id=id)
 	
 	context={ "question": instance }
@@ -148,12 +152,15 @@ def announcements(request):
 def submission(request,id=None):
 
 	#! -*- coding: utf-8 -*-
-	#import json
-	#from pprint import pprint
-	id=request.POST['id']
-	instance=get_object_or_404(Question,id=id)
-	
-	import requests
+
+	if not request.user.is_active:
+		return HttpResponseRedirect(reverse_lazy('login_page'))
+
+	user_detail = UserProfile.objects.get(user=request.user)
+	user_id = user_detail.email_ID
+
+	id = request.POST['id']
+	instance = get_object_or_404(Question, id=id)
 
 	# constants
 	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
@@ -162,12 +169,6 @@ def submission(request,id=None):
 	lang = request.POST['lang']
 	source = request.POST['source']
 
-
-	# if(source==''||lang==''):
-	# 	context = {
-	# 		"error":"Source Code can not be empty"
-	# 	}
-	# 	return render(request,"error.html",context)
 
 	data = {
     	'client_secret': CLIENT_SECRET,
@@ -184,6 +185,12 @@ def submission(request,id=None):
 	status = r.json()
 	status=status['run_status']
 	status=status['status']
+	output = None
+
+
+	web_link=r.json()
+	web_link=web_link['web_link']
+
 	
 	if(status=="CE"):
 		result=0
@@ -196,22 +203,26 @@ def submission(request,id=None):
 		output=output['run_status']
 		output=output['output']
 		# output=output.encode('ascii','ignore')
-		output=str(output)
-		if(output=="instance.testcase_output"):
-			result=4
+
+		if str(output) == str(instance.testcase_output+'\n'):
+			result = 4
 			# correct answer
 		else:
 			result=3
-		# wroing answer
+			# wrong answer
+
+	query = Submission(user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
+	query.save()
 
 	
-	context={
-	"object":r.json(),
-    "data":result,
-	"language":lang,
-	"source":source,
-	"op":instance.testcase_output,
-	"op1":output,
-	}
+	#context={
+	#"object":r.json(),
+    #"data":result,
+	#"language":lang,
+	#"source":source,
+	#"data":web_link,
+	#"user":user_detail.email_ID,
+	#"temp":temp,
+	#}
 	
-	return render(request,"submission.html",context)
+	return render(request,"submission.html")

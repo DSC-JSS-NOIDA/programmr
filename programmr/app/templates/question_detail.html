@@ -40,18 +40,18 @@
   <!-- <div class='col-sm-6 col-sm-offset-3'> -->
 
 <form method='POST' action='/submission/' enctype='multipart/form-data'>{% csrf_token %}
- <select class="language" name="lang">
-  <option value="Select">Select</option>
-  <option value="C">C</option>
-  <option value="CPP">CPP</option>
-  <option value="JAVA">JAVA</option>
-  <option value="PYTHON">PYTHON</option>
-</select> <br /><br />
-<input type="hidden" name="source" class="source" value="" />
-<textarea type="text" id="editor" /></textarea>
-<br /><br />
-<input type='submit' class='btn btn-default' value='Submit' />
-<input type="hidden" name="id" value="{{ question.id }}" />
+    <select class="language" name="lang">
+        <option value="Select">Select</option>
+        <option value="C">C</option>
+        <option value="CPP">C++</option>
+        <option value="JAVA">JAVA</option>
+        <option value="PYTHON">PYTHON</option>
+    </select> <br /><br />
+    <input type="hidden" name="source" class="source" value="" />
+    <textarea type="text" id="editor" /></textarea>
+    <br /><br />
+    <input type='submit' class='btn btn-default' value='Submit' />
+    <input type="hidden" name="id" value="{{ question.id }}" />
 </form>
 <!-- </div> -->
 
@@ -59,7 +59,7 @@
 <!-- Embed Ace-C9 editor script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-  var lang = "C";
+    var lang = "C";
     $(document).ready(function(){
         $("select").change(function(){
           $("select option:selected").each(function(){
