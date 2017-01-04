@@ -211,18 +211,23 @@ def submission(request,id=None):
 			result=3
 			# wrong answer
 
+
 	query = Submission(user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
-	query.save()
+	temp=query.save()
 
 	
-	#context={
-	#"object":r.json(),
-    #"data":result,
-	#"language":lang,
-	#"source":source,
-	#"data":web_link,
-	#"user":user_detail.email_ID,
-	#"temp":temp,
-	#}
+	q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
+
+	context={
+	"object":r.json(),
+    "data1":result,
+	"language":lang,
+	"source":source,
+	"data":web_link,
+	"user":user_detail.email_ID,
+	"temp":temp,
+	#"entry":entry,
+	"q":q,
+	}
 	
-	return render(request,"submission.html")
+	return render(request,"submission.html",context)
