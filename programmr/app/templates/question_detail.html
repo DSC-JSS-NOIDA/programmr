@@ -39,7 +39,8 @@
 
   <!-- <div class='col-sm-6 col-sm-offset-3'> -->
 
-<form method='POST' action='/submission/' enctype='multipart/form-data'>{% csrf_token %}
+<form method='POST' action='/submission/' enctype='multipart/form-data'>
+    {% csrf_token %}
     <select class="language" name="lang">
         <option value="Select">Select</option>
         <option value="C">C</option>
@@ -49,7 +50,10 @@
     </select> <br /><br />
     <input type="hidden" name="source" class="source" value="" />
     <textarea type="text" id="editor" /></textarea>
-    <br /><br />
+    <br />
+    <p>--OR--</p>
+    <br>
+    {{form}}
     <input type='submit' class='btn btn-default' value='Submit' />
     <input type="hidden" name="id" value="{{ question.id }}" />
 </form>

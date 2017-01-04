@@ -8,5 +8,3 @@ admin.site.register(UserProfile)
 admin.site.register(GoogleProfile)
 admin.site.register(Question)
 admin.site.register(Submission)
-
-

@@ -60,3 +60,5 @@ class Submission(models.Model):
 
 	def __unicode__(self):
 		return self.status
+
+

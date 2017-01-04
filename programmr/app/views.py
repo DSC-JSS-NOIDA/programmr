@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from models import *
-from forms import ProfileForm
+from forms import *
 from django.http import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from urllib import quote_plus
@@ -116,10 +116,7 @@ def dashboard(request):
 	user_detail = UserProfile.objects.get(user=request.user)
 	queryset=Question.objects.all()
 	
-
-
-    
- 	context={ "user": user_detail, "questions":queryset }
+	context={ "user": user_detail, "questions":queryset }
 	
 	return render(request, "dashboard.html", context)
 
@@ -131,8 +128,8 @@ def question_detail(request,id=None):
 		return HttpResponseRedirect(reverse_lazy('login_page'))
 
 	instance=get_object_or_404(Question,id=id)
-	
-	context={ "question": instance }
+	form = UploadFileForm()
+	context={ "question": instance, "form": form }
 	return render(request, "question_detail.html", context)
 
 
@@ -154,80 +151,107 @@ def submission(request,id=None):
 	#! -*- coding: utf-8 -*-
 
 	if not request.user.is_active:
+		
 		return HttpResponseRedirect(reverse_lazy('login_page'))
 
-	user_detail = UserProfile.objects.get(user=request.user)
-	user_id = user_detail.email_ID
+	elif request.method == 'POST':
+		
+		user_detail = UserProfile.objects.get(user=request.user)
+		user_id = user_detail.email_ID
 
-	id = request.POST['id']
-	instance = get_object_or_404(Question, id=id)
+		id = request.POST['id']
+		instance = get_object_or_404(Question, id=id)
 
-	# constants
-	RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
-	CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
+		# constants
+		RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
+		CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
 
-	lang = request.POST['lang']
-	source = request.POST['source']
+		lang = request.POST['lang']
 
-
-	data = {
-    	'client_secret': CLIENT_SECRET,
-    	'async': 0,
-    	'source': source,
-    	'lang': lang,
-    	'time_limit': 5,
-    	'memory_limit': 262144,
-    	'input':instance.testcase_input,
-	}
-
-	r = requests.post(RUN_URL, data=data)
-
-	status = r.json()
-	status=status['run_status']
-	status=status['status']
-	output = None
+		if request.POST['source'] != None:
+			
+			source = request.POST['source']
 
 
-	web_link=r.json()
-	web_link=web_link['web_link']
+			data = {
+		    	'client_secret': CLIENT_SECRET,
+		    	'async': 0,
+		    	'source': source,
+		    	'lang': lang,
+		    	'time_limit': 5,
+		    	'memory_limit': 262144,
+		    	'input':instance.testcase_input,
+			}
 
-	
-	if(status=="CE"):
-		result=0
-	elif(status=="TLE"):
-		result=1
-	elif(status=="RE"):
-		result=2
-	else:
-		output = r.json()
-		output=output['run_status']
-		output=output['output']
-		# output=output.encode('ascii','ignore')
+			r = requests.post(RUN_URL, data=data)
 
-		if str(output) == str(instance.testcase_output+'\n'):
-			result = 4
-			# correct answer
+		if len(request.FILES) != 0:
+			form = UploadFileForm(request.POST, request.FILES)
+			if form.is_valid():
+				file = request.FILES['file']
+				print file.read()
+
+				data = {
+			    	
+			    	'client_secret': CLIENT_SECRET,
+			    	'async': 0,
+			    	'source': file.read(),
+			    	'lang': lang,
+			    	'time_limit': 5,
+			    	'memory_limit': 262144,
+			    	'input':instance.testcase_input,
+				}
+
+		status = r.json()
+		print status
+		status=status['run_status']
+		status=status['status']
+		output = None
+
+
+		web_link=r.json()
+		web_link=web_link['web_link']
+
+		
+		if(status=="CE"):
+			result=0
+		elif(status=="TLE"):
+			result=1
+		elif(status=="RE"):
+			result=2
 		else:
-			result=3
-			# wrong answer
+			output = r.json()
+			output=output['run_status']
+			output=output['output']
+			# output=output.encode('ascii','ignore')
+
+			if str(output) == str(instance.testcase_output+'\n'):
+				result = 4
+				# correct answer
+			else:
+				result=3
+				# wrong answer
 
 
-	query = Submission(user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
-	temp=query.save()
+		query = Submission(user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
+		temp=query.save()
 
-	
-	q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
+		
+		q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
 
-	context={
-	"object":r.json(),
-    "data1":result,
-	"language":lang,
-	"source":source,
-	"data":web_link,
-	"user":user_detail.email_ID,
-	"temp":temp,
-	#"entry":entry,
-	"q":q,
-	}
-	
-	return render(request,"submission.html",context)
+		context={
+		"object":r.json(),
+	    "data1":result,
+		"language":lang,
+		"source":source,
+		"data":web_link,
+		"user":user_detail.email_ID,
+		"temp":temp,
+		#"entry":entry,
+		"q":q,
+		}
+		
+		return render(request,"submission.html",context)
+
+	else:
+		return render(request,"error.html",context)
