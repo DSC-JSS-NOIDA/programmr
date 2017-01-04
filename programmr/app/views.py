@@ -168,10 +168,10 @@ def submission(request,id=None):
 
 		lang = request.POST['lang']
 
-		if request.POST['source'] != None:
+		if len(request.POST['source']) != 0:
 			
 			source = request.POST['source']
-
+			print source
 
 			data = {
 		    	'client_secret': CLIENT_SECRET,
@@ -183,25 +183,25 @@ def submission(request,id=None):
 		    	'input':instance.testcase_input,
 			}
 
-			r = requests.post(RUN_URL, data=data)
-
-		if len(request.FILES) != 0:
+		elif len(request.FILES) != 0:
 			form = UploadFileForm(request.POST, request.FILES)
 			if form.is_valid():
 				file = request.FILES['file']
-				print file.read()
+				source = file.read()
 
 				data = {
 			    	
 			    	'client_secret': CLIENT_SECRET,
 			    	'async': 0,
-			    	'source': file.read(),
+			    	'source': source,
 			    	'lang': lang,
 			    	'time_limit': 5,
 			    	'memory_limit': 262144,
 			    	'input':instance.testcase_input,
 				}
 
+		print data
+		r = requests.post(RUN_URL, data=data)
 		status = r.json()
 		print status
 		status=status['run_status']
