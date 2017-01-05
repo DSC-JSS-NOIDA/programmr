@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^announcements$',views.announcements,name='announcements'),
     url(r'^question_detail/(?P<id>[0-9]+)$',views.question_detail,name='question_detail'),
 	url(r'^submission/$',views.submission,name='submission'),
+	url(r'^leaderboard/$',views.leaderboard,name='leaderboard'),
 
 ]

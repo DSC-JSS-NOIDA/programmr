@@ -212,6 +212,17 @@ def submission(request,id=None):
 		web_link=r.json()
 		web_link=web_link['web_link']
 
+		f = Question.objects.all().get(id=id).testcase_input
+		f.open(mode='rb') 
+		lines = f.readlines()
+		f.close()
+
+		g = Question.objects.all().get(id=id).testcase_output
+		g.open(mode='rb') 
+		lines = g.readlines()
+		g.close()
+
+
 		
 		if(status=="CE"):
 			result=0
@@ -223,9 +234,12 @@ def submission(request,id=None):
 			output = r.json()
 			output=output['run_status']
 			output=output['output']
-			# output=output.encode('ascii','ignore')
 
-			if str(output) == str(instance.testcase_output+'\n'):
+
+			#if str(output) == str(instance.testcase_output+'\n'):
+			#	result = 4
+				# correct answer
+			if output == str(instance.testcase_output):
 				result = 4
 				# correct answer
 			else:
@@ -238,6 +252,8 @@ def submission(request,id=None):
 
 		
 		q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
+		
+
 
 		context={
 		"object":r.json(),
@@ -249,9 +265,23 @@ def submission(request,id=None):
 		"temp":temp,
 		#"entry":entry,
 		"q":q,
+		"f":f,
+		"g":g,
 		}
 		
 		return render(request,"submission.html",context)
 
 	else:
 		return render(request,"error.html",context)
+
+
+
+
+def leaderboard(request):
+	data=UserProfile.objects.annotate().order_by('-total_score')
+	
+    
+	context={
+    "data":data,
+    }
+	return render(request,"leaderboard.html",context)

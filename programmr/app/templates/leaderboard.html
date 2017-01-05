@@ -1,0 +1,14 @@
+{% include "header.html" %}
+
+<h3>LEADERBOARD</h3>
+
+{% for userdata in data %}
+{{ userdata.name }}
+{{ userdata.total_score }}
+<br /><br />
+
+
+
+{% endfor %}
+
+{% include "footer.html" %}
