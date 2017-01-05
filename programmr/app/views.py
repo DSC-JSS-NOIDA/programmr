@@ -115,6 +115,7 @@ def dashboard(request):
 	
 	user_detail = UserProfile.objects.get(user=request.user)
 	queryset=Question.objects.all()
+
 	
 	context={ "user": user_detail, "questions":queryset }
 	
@@ -149,6 +150,7 @@ def announcements(request):
 def submission(request,id=None):
 
 	#! -*- coding: utf-8 -*-
+	#import string
 
 	if not request.user.is_active:
 		
@@ -214,16 +216,20 @@ def submission(request,id=None):
 
 		f = Question.objects.all().get(id=id).testcase_input
 		f.open(mode='rb') 
-		lines = f.readlines()
+		lines_input = f.readlines()
 		f.close()
 
 		g = Question.objects.all().get(id=id).testcase_output
 		g.open(mode='rb') 
-		lines = g.readlines()
+		lines_output = g.readlines()
 		g.close()
-
-
 		
+		
+		str1 = ''.join(str(e) for e in lines_output)
+
+
+
+
 		if(status=="CE"):
 			result=0
 		elif(status=="TLE"):
@@ -236,10 +242,7 @@ def submission(request,id=None):
 			output=output['output']
 
 
-			#if str(output) == str(instance.testcase_output+'\n'):
-			#	result = 4
-				# correct answer
-			if output == str(instance.testcase_output):
+			if output == str1:
 				result = 4
 				# correct answer
 			else:
@@ -253,7 +256,8 @@ def submission(request,id=None):
 		
 		q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
 		
-
+		
+	
 
 		context={
 		"object":r.json(),
@@ -265,8 +269,9 @@ def submission(request,id=None):
 		"temp":temp,
 		#"entry":entry,
 		"q":q,
-		"f":f,
-		"g":g,
+		"lines_input":lines_input,
+		"lines_output":lines_output,
+		"str1":str1,
 		}
 		
 		return render(request,"submission.html",context)
