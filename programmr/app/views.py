@@ -235,11 +235,11 @@ def submission(request,id=None):
 
 
 		if(status=="CE"):
-			result=0
+			result="CE"
 		elif(status=="TLE"):
-			result=1
+			result="TLE"
 		elif(status=="RE"):
-			result=2
+			result="RE"
 		else:
 			output = r.json()
 			output=output['run_status']
@@ -247,10 +247,10 @@ def submission(request,id=None):
 
 
 			if output == str1:
-				result = 4
+				result = "CA"
 				# correct answer
 			else:
-				result=3
+				result="WA"
 				# wrong answer
 
 		query = Submission(ques_ID=instance, user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
@@ -261,8 +261,9 @@ def submission(request,id=None):
 		
 	
 		context={
+		         "result":result,
 		
-		}
+		        }
 		
 		return render(request,"submission.html",context)
 
