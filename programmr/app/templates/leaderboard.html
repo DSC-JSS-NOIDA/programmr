@@ -1,14 +1,17 @@
-{% include "header.html" %}
+{% include "include/header.html" %}
+{% include "include/navbar.html" %}
 
 <h3>LEADERBOARD</h3>
 
 {% for userdata in data %}
+{{ forloop.counter }}
 {{ userdata.name }}
 {{ userdata.total_score }}
+
 <br /><br />
 
 
 
 {% endfor %}
 
-{% include "footer.html" %}
+{% include "include/footer.html" %}

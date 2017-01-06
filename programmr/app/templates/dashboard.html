@@ -1,4 +1,5 @@
-{% include "header.html" %}
+{% include "include/header.html" %}
+{% include "include/navbar.html" %}
 
 	<h1>Dashboard</h1>
 
@@ -10,10 +11,13 @@
 	<ul>
 		{% for question in questions %}
 			<li><a href="/question_detail/{{ question.id }}">{{ question.title }}</a></li><br />
-			Total Submission:<br /><br />
+			Total Submission:{{ details }}<br /><br />
 			Accuracy:<br /><br />
 		{% endfor %}
+
 	</ul>
+
+	
 
 
 
@@ -21,7 +25,7 @@
 
 		
 
-{% include "footer.html" %}
+{% include "include/footer.html" %}
 
 
 

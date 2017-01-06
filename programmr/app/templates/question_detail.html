@@ -1,4 +1,5 @@
-{% include "header.html" %}
+{% include "include/header.html" %}
+{% include "include/navbar.html" %}
 
 {% block content %}
 
@@ -10,27 +11,27 @@
 <br />
 <br />
 
-<p>{{ question.detail }}</p>
+Problem:<p>{{ question.detail }}</p>
 
 <br />
 <br />
 
-<p>{{ question.constraint }}</p>
+Constraint:<p>{{ question.constraint }}</p>
 
 <br />
 <br />
 
-<p>{{ question.input_format }}</p>
+Input Format:<p>{{ question.input_format }}</p>
 
 <br />
 <br />
 
-<p>{{ question.output_format }}</p>
+Output Format:<p>{{ question.output_format }}</p>
 
 <br />
 <br />
 
-<p>{{ question.sample_testcase | safe | linebreaks }}</p>
+Sample Testcase:<p>{{ question.sample_testcase | safe | linebreaks }}</p>
 
 <br />
 <br />
@@ -91,7 +92,7 @@
 
 
 
-{% include "footer.html" %}
+{% include "include/footer.html" %}
 
 
 

@@ -13,7 +13,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from urllib import urlopen
 
-
 # Create your views here.
 
 getGoogle = GooglePlus(settings.GOOGLE_PLUS_APP_ID, settings.GOOGLE_PLUS_APP_SECRET)
@@ -115,9 +114,16 @@ def dashboard(request):
 	
 	user_detail = UserProfile.objects.get(user=request.user)
 	queryset=Question.objects.all()
+	#details =Submission.objects.filter(question_ID=id).count()
 
 	
-	context={ "user": user_detail, "questions":queryset }
+
+	
+	context={ 
+			"user": user_detail, 
+	        "questions":queryset,
+	        #"details":details,
+	         }
 	
 	return render(request, "dashboard.html", context)
 
@@ -228,8 +234,6 @@ def submission(request,id=None):
 		str1 = ''.join(str(e) for e in lines_output)
 
 
-
-
 		if(status=="CE"):
 			result=0
 		elif(status=="TLE"):
@@ -249,35 +253,21 @@ def submission(request,id=None):
 				result=3
 				# wrong answer
 
-
-		query = Submission(user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
-		temp=query.save()
+		query = Submission(ques_ID=instance, user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
+		query.save()
 
 		
 		q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
 		
-		
 	
-
 		context={
-		"object":r.json(),
-	    "data1":result,
-		"language":lang,
-		"source":source,
-		"data":web_link,
-		"user":user_detail.email_ID,
-		"temp":temp,
-		#"entry":entry,
-		"q":q,
-		"lines_input":lines_input,
-		"lines_output":lines_output,
-		"str1":str1,
+		
 		}
 		
 		return render(request,"submission.html",context)
 
 	else:
-		return render(request,"error.html",context)
+		return render(request,"errors/404.html",context)
 
 
 
@@ -285,8 +275,9 @@ def submission(request,id=None):
 def leaderboard(request):
 	data=UserProfile.objects.annotate().order_by('-total_score')
 	
-    
 	context={
     "data":data,
+   
     }
 	return render(request,"leaderboard.html",context)
+

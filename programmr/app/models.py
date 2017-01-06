@@ -43,6 +43,7 @@ class Question(models.Model):
 	sample_testcase=models.TextField()
 	testcase_input=models.FileField(upload_to=None,max_length=100)
 	testcase_output=models.FileField(upload_to=None,max_length=100)
+	
 
 	def __unicode__(self):
 		return self.title
@@ -51,7 +52,7 @@ class Question(models.Model):
 
 class Submission(models.Model):
 
-	
+	ques_ID = models.ForeignKey(Question)
 	user_ID=models.CharField(max_length=120)
 	question_ID=models.CharField(max_length=120)
 	status=models.CharField(max_length=120)
