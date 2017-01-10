@@ -100,7 +100,6 @@ def profile(request):
 	f = ProfileForm(request.POST, instance=a)
 	
 	if request.method == 'POST':
-		print "saved!"
 		f.save()
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
 
@@ -171,7 +170,6 @@ def submission(request,id=None):
 		if len(request.POST['source']) != 0:
 			
 			source = request.POST['source']
-			print source
 
 			data = {
 		    	'client_secret': CLIENT_SECRET,
@@ -200,10 +198,8 @@ def submission(request,id=None):
 			    	'input':instance.testcase_input,
 				}
 
-		print data
 		r = requests.post(RUN_URL, data=data)
 		status = r.json()
-		print status
 		status=status['run_status']
 		status=status['status']
 		output = None
