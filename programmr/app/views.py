@@ -13,7 +13,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from urllib import urlopen
 
-
 # Create your views here.
 
 getGoogle = GooglePlus(settings.GOOGLE_PLUS_APP_ID, settings.GOOGLE_PLUS_APP_SECRET)
@@ -114,8 +113,16 @@ def dashboard(request):
 	
 	user_detail = UserProfile.objects.get(user=request.user)
 	queryset=Question.objects.all()
+	#details =Submission.objects.filter(question_ID=id).count()
+
 	
-	context={ "user": user_detail, "questions":queryset }
+
+	
+	context={ 
+			"user": user_detail, 
+	        "questions":queryset,
+	        #"details":details,
+	         }
 	
 	return render(request, "dashboard.html", context)
 
@@ -148,6 +155,7 @@ def announcements(request):
 def submission(request,id=None):
 
 	#! -*- coding: utf-8 -*-
+	#import string
 
 	if not request.user.is_active:
 		
@@ -208,46 +216,65 @@ def submission(request,id=None):
 		web_link=r.json()
 		web_link=web_link['web_link']
 
+		f = Question.objects.all().get(id=id).testcase_input
+		f.open(mode='rb') 
+		lines_input = f.readlines()
+		f.close()
+
+		g = Question.objects.all().get(id=id).testcase_output
+		g.open(mode='rb') 
+		lines_output = g.readlines()
+		g.close()
 		
+		
+		str1 = ''.join(str(e) for e in lines_output)
+
+
 		if(status=="CE"):
-			result=0
+			result="CE"
 		elif(status=="TLE"):
-			result=1
+			result="TLE"
 		elif(status=="RE"):
-			result=2
+			result="RE"
 		else:
 			output = r.json()
 			output=output['run_status']
 			output=output['output']
-			# output=output.encode('ascii','ignore')
 
-			if str(output) == str(instance.testcase_output+'\n'):
-				result = 4
+
+			if output == str1:
+				result = "CA"
 				# correct answer
 			else:
-				result=3
+				result="WA"
 				# wrong answer
 
-
-		query = Submission(user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
-		temp=query.save()
+		query = Submission(ques_ID=instance, user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
+		query.save()
 
 		
 		q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
-
+		
+	
 		context={
-		"object":r.json(),
-	    "data1":result,
-		"language":lang,
-		"source":source,
-		"data":web_link,
-		"user":user_detail.email_ID,
-		"temp":temp,
-		#"entry":entry,
-		"q":q,
-		}
+		         "result":result,
+		
+		        }
 		
 		return render(request,"submission.html",context)
 
 	else:
-		return render(request,"error.html",context)
+		return render(request,"errors/404.html",context)
+
+
+
+
+def leaderboard(request):
+	data=UserProfile.objects.annotate().order_by('-total_score')
+	
+	context={
+    "data":data,
+   
+    }
+	return render(request,"leaderboard.html",context)
+

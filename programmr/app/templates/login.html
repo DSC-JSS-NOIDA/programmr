@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Programmr</title>
-</head>
-<body>
-	<h1>Login Page</h1>
-	<br><br>
+{% include "include/header.html" %}
+{% include "include/navbar.html" %}
+
 	<a href="{% url 'login_google' %}">Login</a>
-</body>
-</html>
+
+{% include "include/footer.html" %}
