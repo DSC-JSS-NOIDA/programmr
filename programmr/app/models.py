@@ -41,8 +41,9 @@ class Question(models.Model):
 	input_format=models.TextField()
 	output_format=models.TextField()
 	sample_testcase=models.TextField()
-	testcase_input=models.FileField(upload_to=None,max_length=100)
-	testcase_output=models.FileField(upload_to=None,max_length=100)
+	testcase_input=models.FileField(upload_to="Testcase",max_length=100)
+	testcase_output=models.FileField(upload_to="Testcase",max_length=100)
+	total_submissions=models.CharField(max_length=10, default='0')
 	
 
 	def __unicode__(self):

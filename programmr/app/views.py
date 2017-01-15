@@ -113,16 +113,11 @@ def dashboard(request):
 	
 	user_detail = UserProfile.objects.get(user=request.user)
 	queryset=Question.objects.all()
-	#details =Submission.objects.filter(question_ID=id).count()
 
-	
-
-	
-	context={ 
+	context = { 
 			"user": user_detail, 
-	        "questions":queryset,
-	        #"details":details,
-	         }
+	        "questions": queryset,
+	    }
 	
 	return render(request, "dashboard.html", context)
 
@@ -174,6 +169,15 @@ def submission(request,id=None):
 		CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
 
 		lang = request.POST['lang']
+		f = Question.objects.all().get(id=id).testcase_input
+		f.open(mode='rb') 
+		lines_input = f.read()
+		f.close()
+
+		g = Question.objects.all().get(id=id).testcase_output
+		g.open(mode='rb') 
+		lines_output = g.read()
+		g.close()
 
 		if len(request.POST['source']) != 0:
 			
@@ -186,7 +190,7 @@ def submission(request,id=None):
 		    	'lang': lang,
 		    	'time_limit': 5,
 		    	'memory_limit': 262144,
-		    	'input':instance.testcase_input,
+		    	'input':lines_input,
 			}
 
 		elif len(request.FILES) != 0:
@@ -203,32 +207,17 @@ def submission(request,id=None):
 			    	'lang': lang,
 			    	'time_limit': 5,
 			    	'memory_limit': 262144,
-			    	'input':instance.testcase_input,
+			    	'input':lines_input,
 				}
 
 		r = requests.post(RUN_URL, data=data)
 		status = r.json()
 		status=status['run_status']
+		output = status['output']
 		status=status['status']
-		output = None
-
 
 		web_link=r.json()
 		web_link=web_link['web_link']
-
-		f = Question.objects.all().get(id=id).testcase_input
-		f.open(mode='rb') 
-		lines_input = f.readlines()
-		f.close()
-
-		g = Question.objects.all().get(id=id).testcase_output
-		g.open(mode='rb') 
-		lines_output = g.readlines()
-		g.close()
-		
-		
-		str1 = ''.join(str(e) for e in lines_output)
-
 
 		if(status=="CE"):
 			result="CE"
@@ -236,13 +225,9 @@ def submission(request,id=None):
 			result="TLE"
 		elif(status=="RE"):
 			result="RE"
-		else:
-			output = r.json()
-			output=output['run_status']
-			output=output['output']
+		elif(status=="AC"):
 
-
-			if output == str1:
+			if output == (lines_output+'\n'):
 				result = "CA"
 				# correct answer
 			else:
@@ -252,14 +237,10 @@ def submission(request,id=None):
 		query = Submission(ques_ID=instance, user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
 		query.save()
 
+		instance.total_submissions = instance.submission_set.count()
+		instance.save()
 		
-		q=Submission.objects.extra(where=["question_ID="+id,"status=4","user_ID=user_id"]).count
-		
-	
-		context={
-		         "result":result,
-		
-		        }
+		context={ "result":result }
 		
 		return render(request,"submission.html",context)
 
@@ -270,11 +251,8 @@ def submission(request,id=None):
 
 
 def leaderboard(request):
-	data=UserProfile.objects.annotate().order_by('-total_score')
+	data = UserProfile.objects.annotate().order_by('-total_score')
 	
-	context={
-    "data":data,
-   
-    }
+	context={ "data":data }
 	return render(request,"leaderboard.html",context)
 
