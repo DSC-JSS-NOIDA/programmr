@@ -43,10 +43,10 @@
         {% csrf_token %}
         <select class="language" name="lang">
             <option value="Select">Select</option>
-            <option value="C">C</option>
-            <option value="CPP">C++</option>
-            <option value="JAVA">JAVA</option>
-            <option value="PYTHON">PYTHON</option>
+            <option value="c_cpp">C</option>
+            <option value="c_cpp">C++</option>
+            <option value="java">JAVA</option>
+            <option value="python">PYTHON</option>
         </select> <br /><br />
         <input type="hidden" name="source" class="source" value="" />
         <textarea type="text" id="editor" /></textarea>
@@ -63,19 +63,21 @@
     <!-- Embed Ace-C9 editor script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
-        var lang = "C";
+        var lang = "c_cpp";
         $(document).ready(function(){
             $("select").change(function(){
               $("select option:selected").each(function(){
-                lang=$(this).text();
+                lang=$(this).attr('value');
                 console.log(lang);
+                editor.session.setMode("ace/mode/"+lang);
+                // v: Date.now();  
+
               });
             });
         });
 
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/twilight");
-        editor.session.setMode("ace/mode/"+lang);
         // editor.resize();
         
         editor.setAutoScrollEditorIntoView(true);
