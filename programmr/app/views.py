@@ -141,7 +141,11 @@ def rules(request):
 
 	
 def announcements(request):
-	return render(request,"announcements.html")
+	queryset=Announcement.objects.get()
+	context={
+	        "Announcement":queryset
+	}
+	return render(request,"announcements.html",context)
 	
 
 

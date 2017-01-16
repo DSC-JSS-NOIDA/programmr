@@ -64,3 +64,10 @@ class Submission(models.Model):
 		return self.status
 
 
+class Announcement(models.Model):
+	announcement=models.TextField()
+
+	def __unicode__(self):
+		return self.announcement
+
+
