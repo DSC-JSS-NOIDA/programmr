@@ -12,7 +12,8 @@
 		{% for question in questions %}
 			<li><a href="/question_detail/{{ question.id }}">{{ question.title }}</a></li><br />
 			Total Submission : {{ question.total_submissions }}<br /><br />
-			Accuracy:<br /><br />
+			Accuracy: {{ question.accuracy }}
+			<br /><br />
 		{% endfor %}
 
 	</ul>

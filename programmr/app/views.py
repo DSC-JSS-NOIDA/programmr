@@ -1,3 +1,4 @@
+from __future__ import division
 import requests
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
@@ -40,6 +41,7 @@ def google_login(request):
 	state = request.GET['state']
 	getGoogle.get_access_token(code, state)
 	userInfo = getGoogle.get_user_info()
+	print userInfo
 	username = userInfo['given_name'] + userInfo['family_name']
 	password = 'password'
 	new = None
@@ -61,7 +63,6 @@ def google_login(request):
 			profile.user = new_user
 			profile.google_user_id = userInfo['id']
 			profile.access_token = getGoogle.access_token
-			profile.profile_url = userInfo['link']
 			new = True
 			user_profile = UserProfile()
 			user_profile.user = new_user
@@ -167,7 +168,7 @@ def submission(request,id=None):
 		# constants
 		RUN_URL = u'https://api.hackerearth.com/v3/code/run/'
 		CLIENT_SECRET = 'b00a3022083cfb5ba5fc2377d0d126e612c35d82'
-
+		
 		lang = request.POST['lang']
 		f = Question.objects.all().get(id=id).testcase_input
 		f.open(mode='rb') 
@@ -229,7 +230,10 @@ def submission(request,id=None):
 
 			if output == (lines_output+'\n'):
 				result = "CA"
-				# correct answer
+				if instance.submission_set.filter(user_ID=user_id, status=result).count() == 0:
+					user_detail.total_score += 100
+					user_detail.save()
+					# correct answer
 			else:
 				result="WA"
 				# wrong answer
@@ -238,6 +242,8 @@ def submission(request,id=None):
 		query.save()
 
 		instance.total_submissions = instance.submission_set.count()
+		correct_answers = instance.submission_set.filter(status="CA").count()
+		instance.accuracy = (correct_answers/instance.total_submissions)*100
 		instance.save()
 		
 		context={ "result":result }
@@ -245,14 +251,12 @@ def submission(request,id=None):
 		return render(request,"submission.html",context)
 
 	else:
-		return render(request,"errors/404.html",context)
+		return render(request,"errors/404.html")
 
 
 
 
 def leaderboard(request):
 	data = UserProfile.objects.annotate().order_by('-total_score')
-	
-	context={ "data":data }
-	return render(request,"leaderboard.html",context)
+	return render(request,"leaderboard.html", {"data": data})
 

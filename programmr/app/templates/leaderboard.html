@@ -4,7 +4,7 @@
 <h3>LEADERBOARD</h3>
 
 {% for userdata in data %}
-{{ forloop.counter }}
+<img src="{{ userdata.avatar }}" height="60" width="60">
 {{ userdata.name }}
 {{ userdata.total_score }}
 

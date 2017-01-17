@@ -47,7 +47,7 @@ class GooglePlus:
 	def get_access_token(self, code, state):
 
 		if state != self.session_id:
-			raise(Exception('Danger! Your established connection in compromised!!!'))
+			raise(Exception('Danger! Your established connection is compromised!!!'))
 
 		authSettings = {
 			'client_secret': self.client_secret,

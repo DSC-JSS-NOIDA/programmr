@@ -10,7 +10,6 @@ class GoogleProfile(models.Model):
 	user = models.ForeignKey(User)
 	google_user_id = models.CharField(max_length=100)
 	access_token = models.CharField(max_length=100)
-	profile_url = models.CharField(max_length=100)
 
 	def __unicode__(self):
 		return self.user.username
@@ -26,7 +25,7 @@ class UserProfile(models.Model):
 	branch=models.CharField(max_length=120, blank=True)
 	mobile_no=models.CharField(max_length=120, blank=True)
 	timestamp=models.DateTimeField(auto_now=True,auto_now_add=False)
-	total_score=models.CharField(max_length=120)
+	total_score=models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
@@ -44,6 +43,7 @@ class Question(models.Model):
 	testcase_input=models.FileField(upload_to="Testcase",max_length=100)
 	testcase_output=models.FileField(upload_to="Testcase",max_length=100)
 	total_submissions=models.CharField(max_length=10, default='0')
+	accuracy = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 	
 
 	def __unicode__(self):

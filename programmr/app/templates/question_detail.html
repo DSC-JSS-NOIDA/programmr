@@ -39,10 +39,10 @@
 
       <!-- <div class='col-sm-6 col-sm-offset-3'> -->
 
-    <form method='POST' action='/submission/' enctype='multipart/form-data'>
+    <form method='POST' action='/submission/' enctype='multipart/form-data' id="form">
         {% csrf_token %}
-        <select class="language" name="lang">
-            <option value="Select">Select</option>
+        <select class="language" name="lang" required>
+            <option value="">Select</option>
             <option value="C">C</option>
             <option value="CPP">C++</option>
             <option value="JAVA">JAVA</option>
@@ -54,8 +54,8 @@
         <p>--OR--</p>
         <br>
         {{form}}
-        <input type='submit' class='btn btn-default' value='Submit' />
         <input type="hidden" name="id" value="{{ question.id }}" />
+        <input type='submit' class='btn btn-default' value='Submit' />
     </form>
     <!-- </div> -->
 
@@ -85,6 +85,11 @@
           console.log(1);
           $(".source").val(editor.getSession().getValue());
         });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#form").validate();
+        })
     </script>
 
 {% endblock content %}
