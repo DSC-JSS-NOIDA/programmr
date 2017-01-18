@@ -7,7 +7,7 @@ class ProfileForm(forms.ModelForm):
 	class Meta:
 
 		model = UserProfile
-		fields = ['email_ID', 'year', 'branch', 'mobile_no']
+		fields = ['year', 'branch', 'mobile_no']
 
 
 class UploadFileForm(forms.Form):

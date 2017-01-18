@@ -1,18 +1,14 @@
 from __future__ import division
 import requests
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse_lazy
 from models import *
 from forms import *
-from django.http import *
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from urllib import quote_plus
+from django.http import HttpResponseRedirect
 from google_script import *
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from urllib import urlopen
 
 # Create your views here.
 
@@ -27,12 +23,10 @@ def login_page(request):
 	return render(request, 'login.html')
 
 
-
 def login_google(request):
 
 	google_url = getGoogle.get_authorize_url()
 	return HttpResponseRedirect(google_url)
-
 
 
 def google_login(request):
@@ -41,8 +35,7 @@ def google_login(request):
 	state = request.GET['state']
 	getGoogle.get_access_token(code, state)
 	userInfo = getGoogle.get_user_info()
-	print userInfo
-	username = userInfo['given_name'] + userInfo['family_name']
+	username = userInfo['displayName']
 	password = 'password'
 	new = None
 
@@ -67,7 +60,8 @@ def google_login(request):
 			user_profile = UserProfile()
 			user_profile.user = new_user
 			user_profile.name = username
-			user_profile.avatar = userInfo['picture']
+			user_profile.email_ID = userInfo["emails"][0]["value"]
+			user_profile.avatar = userInfo["image"]["url"]
 		
 		profile.save()
 		user_profile.save()
@@ -81,14 +75,12 @@ def google_login(request):
 	return HttpResponseRedirect(reverse_lazy('dashboard'))
 
 
-
 def logout_view(request):
 
 	if request.user.is_active:
 		logout(request)
 	
 	return HttpResponseRedirect(reverse_lazy('login_page'))
-
 
 
 def profile(request):
@@ -106,14 +98,13 @@ def profile(request):
 	return render(request, 'profile.html', {'form': f, 'user': a})
 
 
-
 def dashboard(request):
 	
 	if not request.user.is_active:
 		return HttpResponseRedirect(reverse_lazy('login_page'))
 	
 	user_detail = UserProfile.objects.get(user=request.user)
-	queryset=Question.objects.all()
+	queryset = Question.objects.all()
 
 	context = { 
 			"user": user_detail, 
@@ -123,33 +114,15 @@ def dashboard(request):
 	return render(request, "dashboard.html", context)
 
 
-
 def question_detail(request,id=None):
 	
 	if not request.user.is_active:
 		return HttpResponseRedirect(reverse_lazy('login_page'))
 
-	instance=get_object_or_404(Question,id=id)
+	instance = get_object_or_404(Question,id=id)
 	form = UploadFileForm()
-	context={ "question": instance, "form": form }
+	context = { "question": instance, "form": form }
 	return render(request, "question_detail.html", context)
-
-
-
-def rules(request):
-	return render(request,"rules.html")
-
-
-	
-def announcements(request):
-	queryset=Announcement.objects.get()
-	context={
-	        "Announcement":queryset
-	}
-	return render(request,"announcements.html",context)
-	
-
-
 
 
 def submission(request,id=None):
@@ -205,7 +178,6 @@ def submission(request,id=None):
 				source = file.read()
 
 				data = {
-			    	
 			    	'client_secret': CLIENT_SECRET,
 			    	'async': 0,
 			    	'source': source,
@@ -217,40 +189,39 @@ def submission(request,id=None):
 
 		r = requests.post(RUN_URL, data=data)
 		status = r.json()
-		status=status['run_status']
-		output = status['output']
-		status=status['status']
+		output = status['run_status']['output']
+		status = status['run_status']['status']
 
 		web_link=r.json()
 		web_link=web_link['web_link']
 
-		if(status=="CE"):
-			result="CE"
-		elif(status=="TLE"):
-			result="TLE"
-		elif(status=="RE"):
-			result="RE"
-		elif(status=="AC"):
+
+		if(status == "CE"):
+			result = "CE"
+		elif(status == "TLE"):
+			result = "TLE"
+		elif(status == "RE"):
+			result = "RE"
+		elif(status == "AC"):
 
 			if output == (lines_output+'\n'):
 				result = "CA"
 				if instance.submission_set.filter(user_ID=user_id, status=result).count() == 0:
 					user_detail.total_score += 100
 					user_detail.save()
-					# correct answer
+					instance.correct_submissions += 1
+					
 			else:
 				result="WA"
-				# wrong answer
 
 		query = Submission(ques_ID=instance, user_ID=user_id, question_ID=id, status=result,source_code_URL=web_link)
 		query.save()
 
-		instance.total_submissions = instance.submission_set.count()
-		correct_answers = instance.submission_set.filter(status="CA").count()
-		instance.accuracy = (correct_answers/instance.total_submissions)*100
+		instance.total_submissions += 1 
+		instance.accuracy = (instance.correct_submissions/instance.total_submissions)*100
 		instance.save()
 		
-		context={ "result":result }
+		context = { "result":result }
 		
 		return render(request,"submission.html",context)
 
@@ -258,9 +229,18 @@ def submission(request,id=None):
 		return render(request,"errors/404.html")
 
 
-
-
 def leaderboard(request):
 	data = UserProfile.objects.annotate().order_by('-total_score')
 	return render(request,"leaderboard.html", {"data": data})
 
+
+def announcements(request):
+	queryset=Announcement.objects.all()
+	context={
+	    "Announcement":queryset
+	}
+	return render(request,"announcements.html",context)
+	
+
+def rules(request):
+	return render(request,"rules.html")

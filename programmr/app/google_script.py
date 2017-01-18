@@ -8,7 +8,7 @@ import string
 AUTHORISE_URL = 'https://accounts.google.com/o/oauth2/auth'
 ACCESS_TOKEN_URL = 'https://accounts.google.com/o/oauth2/token'
 REDIRECT_URL = 'http://localhost:8000/google_login/'
-PROFILE_API = 'https://www.googleapis.com/auth/plus.login'
+PROFILE_API = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 
 
 class GooglePlus:
@@ -66,7 +66,7 @@ class GooglePlus:
 
 	def get_user_info(self):
 
-		USER_INFO_API = 'https://www.googleapis.com/oauth2/v2/userinfo'
+		USER_INFO_API = 'https://www.googleapis.com/plus/v1/people/me'
 		params = urllib.urlencode({'access_token': self.access_token})
 		response = requests.get(USER_INFO_API + '?' + params)
 		if response.status_code != 200:
