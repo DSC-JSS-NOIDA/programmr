@@ -1,5 +1,45 @@
-{% include "include/header.html" %}
-{% include "include/navbar.html" %}
+{% extends "include/base.html" %}
+
+
+{% block content %}
+	
+	<br><br>
+	<div class="panel panel-default container">			
+		<div class="panel-body">
+			<table class="table bootstrap-datatable">
+				<thead>
+					<tr>
+						<th >S.No</th>
+						<th>Problem Statement</th>
+						<th class="text-center">Submissions</th>
+						<th class="text-center">Accuracy</th>
+					</tr>
+				</thead>   
+				<tbody>
+					{% for question in questions %}
+						<tr>
+							<td>{{ question.id }}</td>
+							<td class="text-justify">
+								<a href="/question_detail/{{ question.id }}">{{ question.title }}</a>
+							</td>
+							<td class="text-center">{{ question.total_submissions }}</td>
+							<td class="text-center">{{ question.accuracy }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div><br>
+
+
+
+
+
+
+
+
+
+
 
 	<h1>Dashboard</h1>
 
@@ -18,16 +58,4 @@
 
 	</ul>
 
-	
-
-
-
-
-
-		
-
-{% include "include/footer.html" %}
-
-
-
-
+{% endblock %}
