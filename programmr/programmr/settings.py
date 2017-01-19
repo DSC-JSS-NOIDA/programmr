@@ -63,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -118,12 +119,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-
-
-LOGIN_URL = '/login_page'
-
+MEDIA_ROOT = 'app/static/img/'
+MEDIA_URL = '/img/'
 
 
 GOOGLE_PLUS_APP_ID = '49069636894-1n6he4hfnt3mfqbbl0eeuq984obbipsv.apps.googleusercontent.com'

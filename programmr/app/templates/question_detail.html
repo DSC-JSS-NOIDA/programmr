@@ -1,5 +1,4 @@
-{% include "include/header.html" %}
-{% include "include/navbar.html" %}
+{% extends "include/base.html" %}
 
 {% block content %}
 
@@ -96,13 +95,4 @@
         })
     </script>
 
-{% endblock content %}
-
-
-
-
-{% include "include/footer.html" %}
-
-
-
-
+{% endblock %}

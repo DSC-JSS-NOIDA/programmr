@@ -1,5 +1,6 @@
-{% include "include/header.html" %}
-{% include "include/navbar.html" %}
+{% extends "include/base.html" %}
+
+{% block content %}
 
 <h3>LEADERBOARD</h3>
 
@@ -9,9 +10,6 @@
 {{ userdata.total_score }}
 
 <br /><br />
-
-
-
 {% endfor %}
 
-{% include "include/footer.html" %}
+{% endblock %}

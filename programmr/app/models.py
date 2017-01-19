@@ -67,6 +67,7 @@ class Submission(models.Model):
 
 class Announcement(models.Model):
 	announcement=models.TextField()
+	image = models.ImageField(upload_to="images", blank=True)
 
 	def __unicode__(self):
 		return self.announcement

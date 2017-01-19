@@ -119,9 +119,14 @@ def question_detail(request,id=None):
 	if not request.user.is_active:
 		return HttpResponseRedirect(reverse_lazy('login_page'))
 
+	user_detail = UserProfile.objects.get(user=request.user)
 	instance = get_object_or_404(Question,id=id)
 	form = UploadFileForm()
-	context = { "question": instance, "form": form }
+	context = { 
+		"question": instance,
+		"form": form,
+		"user": user_detail,
+	}
 	return render(request, "question_detail.html", context)
 
 
@@ -230,17 +235,25 @@ def submission(request,id=None):
 
 
 def leaderboard(request):
+	user_detail = UserProfile.objects.get(user=request.user)
 	data = UserProfile.objects.annotate().order_by('-total_score')
-	return render(request,"leaderboard.html", {"data": data})
+	context = {
+		'user': user_detail,
+		'data': data,
+	}
+	return render(request,"leaderboard.html", context)
 
 
 def announcements(request):
 	queryset=Announcement.objects.all()
+	user_detail = UserProfile.objects.get(user=request.user)
 	context={
-	    "Announcement":queryset
+	    "Announcement": queryset,
+	    "user": user_detail,
 	}
 	return render(request,"announcements.html",context)
 	
 
 def rules(request):
-	return render(request,"rules.html")
+	user_detail = UserProfile.objects.get(user=request.user)
+	return render(request,"rules.html", {'user': user_detail})

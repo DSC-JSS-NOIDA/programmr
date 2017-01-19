@@ -31,31 +31,4 @@
 		</div>
 	</div><br>
 
-
-
-
-
-
-
-
-
-
-
-	<h1>Dashboard</h1>
-
-	<br><br>
-	<img src="{{ user.avatar }}" width="70" height="70">
-	<p>{{ user.name }}</p>
-
-	<br><br>
-	<ul>
-		{% for question in questions %}
-			<li><a href="/question_detail/{{ question.id }}">{{ question.title }}</a></li><br />
-			Total Submission : {{ question.total_submissions }}<br /><br />
-			Accuracy: {{ question.accuracy }}
-			<br /><br />
-		{% endfor %}
-
-	</ul>
-
 {% endblock %}

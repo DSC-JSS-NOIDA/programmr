@@ -1,0 +1,30 @@
+* {
+	margin: 0;
+}
+
+html, body {
+	height: 100%;
+}
+
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -4em;
+}
+
+.footer, .push {
+	height: 4em;
+}
+
+#nav-name {
+	font-size: 16px;
+    padding-top: 30px;
+    margin-right: 10px;
+}
+
+#user-img {
+	border-radius: 50%;
+    width: 40px;
+    margin-top: -10px;
+}

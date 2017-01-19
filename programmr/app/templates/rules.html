@@ -1,5 +1,28 @@
-{% include "include/header.html" %}
-{% include "include/navbar.html" %}
+{% extends "include/base.html" %}
 
-<center><h6>RULES</h6></center>
-{% include "include/footer.html" %}
+{% load static %}
+
+{% block css %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'css/rules.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+	<br>
+	<center><h1>RULES</h1></center>
+	<br><br>
+	<div class="panel panel-default container">			
+		<div class="panel-body">
+			<table class="table">
+				<tr style="border-top: 0px;">
+					<td>1.</td>
+					<td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime dignissimos est atque non doloribus eum nobis in quis id, maiores facilis quas expedita, quia nihil dolorum! Quos quia, asperiores odit?</td>
+				</tr>
+
+			</table>
+		</div>
+	</div><br><br><br>	 
+
+{% endblock %}

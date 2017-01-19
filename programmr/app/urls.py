@@ -1,5 +1,7 @@
 from django.conf.urls import url,include
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -15,4 +17,4 @@ urlpatterns = [
 	url(r'^submission/$',views.submission,name='submission'),
 	url(r'^leaderboard/$',views.leaderboard,name='leaderboard'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
