@@ -32,7 +32,7 @@ a {
 }
 a:hover {
   text-decoration: none;
-  color:#23527c;	
+  color:#eee;	
 }
 
 /*===========================
@@ -438,24 +438,11 @@ footer {
 
     max-width: 350px;
 
-    margin: 290px auto 0;
+    margin: 200px auto 0;
 
     background: #d5d7de;    
 
 }
-
-@media only screen and (max-device-width: 667px) {
-  .login-form {
-    margin: 200px auto 0;
-  }
-}
-
-@media only screen and (max-device-width: 400px) {
-  .login-form {
-    margin: 180px auto 0;
-  }
-}
-
 .login-img-body .login-form{
 
     max-width: 350px;
