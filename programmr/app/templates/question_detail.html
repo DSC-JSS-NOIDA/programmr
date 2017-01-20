@@ -1,73 +1,99 @@
 {% extends "include/base.html" %}
 
+{% load staticfiles %}
+
+{% block css %}
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/question_detail.css' %}">
+
+{% endblock %}
+
 {% block content %}
 
+    <br><br>
+    <div class="panel panel-default container">         
+        <div class="panel-body">
+            <br>
+            <span id="title">{{ question.title }}</span>
+            <br>
+            <hr>
+            <br>
+            <span class="sub_heading">Problem</span>
+            <br>
+            <br>
+            <span class="sub_text">{{ question.detail|linebreaksbr }}</span>
+            <br>
+            <br>
+            <span class="sub_heading">Constraint</span>
+            <br>
+            <br>
+            <span class="sub_text">{{ question.constraint|linebreaksbr }}</span>
+            <br>
+            <br>
+            <span class="sub_heading">Input Format</span>
+            <br>
+            <br>
+            <span class="sub_text">{{ question.input_format|linebreaksbr }}</span>
+            <br>
+            <br>
+            <span class="sub_heading">Output Format</span>
+            <br>
+            <br>
+            <span class="sub_text">{{ question.output_format|linebreaksbr }}</span>
+            <br>
+            <br>
+            <span class="sub_heading">Sample Testcase</span>
+            <br>
+            <br>
+            <span class="sub_text">{{ question.sample_testcase|linebreaksbr }}</span>
+            <br>
+            <br>
+            <form method='POST' action='/submission/' enctype='multipart/form-data' id="form">
+                {% csrf_token %}
+                <div id="editor_lang">
+                <select class="language" id="editor_select" name="editor_lang">
+                    <option value="">Select</option>
+                    <option value="c_cpp">C</option>
+                    <option value="c_cpp">C++</option>
+                    <option value="java">Java</option>
+                    <option value="python">Python</option>
+                </select>
+                <input type="hidden" name="source" class="source" value="" />
+                <textarea type="text" id="editor" /></textarea>
+                </div>
+                <br />
+                <span id="or_tag">OR Upload your source file here:</span>
+                <br>
+                {{form}}
+                <br>
+                <span id="or_tag">Language:</span>
+                <br>
+                <select class="language" id="select" name="lang" required>
+                    <option value="">Select</option>
+                    <option value="C">C</option>
+                    <option value="CPP">C++</option>
+                    <option value="JAVA">JAVA</option>
+                    <option value="PYTHON">PYTHON</option>
+                </select>
+                <input type="hidden" name="id" value="{{ question.id }}" />
+                <br><br>
+                <input type='submit' class='btn btn-primary btn-lg submit-btn' value='Submit' placeholder="Submit" />
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <h3>{{ question.title }}</h3>
+{% endblock %}
 
-
-    <br />
-    <br />
-
-    Problem:<p>{{ question.detail }}</p>
-
-    <br />
-    <br />
-
-    Constraint:<p>{{ question.constraint }}</p>
-
-    <br />
-    <br />
-
-    Input Format:<p>{{ question.input_format|linebreaksbr }}</p>
-
-    <br />
-    <br />
-
-    Output Format:<p>{{ question.output_format | linebreaks }}</p>
-
-    <br />
-    <br />
-
-    Sample Testcase:<p>{{ question.sample_testcase | safe | linebreaks }}</p>
-
-    <br />
-    <br />
-
-    <h3>Code Editor</h3>
-
-      <!-- <div class='col-sm-6 col-sm-offset-3'> -->
-
-    <form method='POST' action='/submission/' enctype='multipart/form-data' id="form">
-        {% csrf_token %}
-
-        <select class="language" name="lang" required>
-            <option value="">Select</option>
-            <option value="C">C</option>
-            <option value="CPP">C++</option>
-            <option value="JAVA">JAVA</option>
-            <option value="PYTHON">PYTHON</option>
-        </select>
-        <br /><br />
-        <input type="hidden" name="source" class="source" value="" />
-        <textarea type="text" id="editor" /></textarea>
-        <br />
-        <p>--OR--</p>
-        <br>
-        {{form}}
-        <input type="hidden" name="id" value="{{ question.id }}" />
-        <input type='submit' class='btn btn-default' value='Submit' />
-    </form>
-    <!-- </div> -->
-
-
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
     <!-- Embed Ace-C9 editor script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
         var lang = "c_cpp";
         $(document).ready(function(){
-            $("select").change(function(){
-              $("select option:selected").each(function(){
+            $("#editor_select").change(function(){
+              $("#editor_select option:selected").each(function(){
                 lang=$(this).attr('value');
                 console.log(lang);
                 editor.session.setMode("ace/mode/"+lang);
@@ -85,7 +111,6 @@
         editor.setOption("maxLines", 30);
         editor.setOption("minLines", 12);
         editor.getSession().on("change", function () {
-          console.log(1);
           $(".source").val(editor.getSession().getValue());
         });
     </script>

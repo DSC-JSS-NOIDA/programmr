@@ -1,15 +1,43 @@
 {% extends "include/base.html" %}
 
+{% load staticfiles %}
+
+{% block css %}
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/leaderboard.css' %}">
+
+{% endblock %}
+
 {% block content %}
 
-<h3>LEADERBOARD</h3>
+	<center><h1>Leaderboard</h1></center>
 
-{% for userdata in data %}
-<img src="{{ userdata.avatar }}" height="60" width="60">
-{{ userdata.name }}
-{{ userdata.total_score }}
-
-<br /><br />
-{% endfor %}
+	<br><br>
+	<div class="panel panel-default container">			
+		<div class="panel-body">
+			<table class="table bootstrap-datatable countries">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Username</th>
+						<th>Score</th>
+					</tr>
+				</thead>   
+				<tbody>
+					{% for userdata in data %}
+					<tr>
+						<td>
+							<span>
+                                <img alt="" class="img-circle user-img" src="{{ userdata.avatar }}">
+                            </span>
+						</td>
+						<td class="username">{{ userdata.name }}</td>
+						<td class="total_score">{{ userdata.total_score }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div><br>
 
 {% endblock %}

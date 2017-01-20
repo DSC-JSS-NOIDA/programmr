@@ -1,0 +1,59 @@
+#title {
+	font-size: 3em;
+	color: #ed502e;
+}
+
+.sub_heading {
+	font-size: 1.4em;
+    color: #696868;
+    font-weight: 400;
+}
+
+.sub_text {
+	font-size: 1.05em;
+}
+
+.ace_content {
+	height: 50em !important;
+}
+
+.ace_editor {
+	height: 50em !important;
+	border: 0px;
+}
+
+#editor_lang {
+	background-color: #141414;
+	border-radius: 4px;
+}
+
+#editor_select {
+	background-color: #141414;
+    color: white;
+    border: 0px;
+}
+
+#select {
+	font-size: 0.9em;
+    color: black;
+    background-color: white;
+}
+
+#or_tag {
+	font-size: 1em;
+    color: #8c8a8a;
+    font-weight: 400;
+}
+
+label {
+	display: none;
+}
+
+.submit-btn {
+	background-color: #ED503D;
+    color: white;
+}
+
+.submit-btn:hover {
+	border-color: transparent;
+}
