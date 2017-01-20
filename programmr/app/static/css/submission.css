@@ -1,0 +1,26 @@
+.box{
+	background-color: #f3f3f3;
+    width: 20%;
+    height: 10em;
+    margin-left: 41%;
+    margin-top: 8%;
+    border-radius: 5px;
+}
+
+.icon {
+	margin-left: 42%;
+    margin-top: 10%;
+}
+
+.sub-text {
+	position: absolute;
+	font-size: 1.5em;
+    margin-left: 5.5%;
+    color: #828282;
+    margin-top: 1%;
+    font-weight: bolder;
+}
+
+.tle {
+    margin-left: 3%;
+}

@@ -56,4 +56,18 @@ label {
 
 .submit-btn:hover {
 	border-color: transparent;
+	background-color: #ED503D;
+    color: white;
+}
+
+.submit-btn:active {
+	border-color: transparent;
+	background-color: #ED503D;
+    color: white;
+}
+
+.btn-primary:active, .btn-primary:focus {
+	border-color: transparent;
+	background-color: #ED503D !important;
+    color: white;
 }

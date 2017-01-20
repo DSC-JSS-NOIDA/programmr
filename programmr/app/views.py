@@ -191,11 +191,11 @@ def submission(request,id=None):
 			    	'memory_limit': 262144,
 			    	'input':lines_input,
 				}
-
+		else:
+			return HttpResponseRedirect(reverse_lazy('question_detail', kwargs={'id':id}))
 		r = requests.post(RUN_URL, data=data)
-		status = r.json()
-		output = status['run_status']['output']
-		status = status['run_status']['status']
+		response = r.json()
+		status = response['run_status']['status']
 
 		web_link=r.json()
 		web_link=web_link['web_link']
@@ -208,7 +208,8 @@ def submission(request,id=None):
 		elif(status == "RE"):
 			result = "RE"
 		elif(status == "AC"):
-
+			print response
+			output = response['run_status']['output']
 			if output == (lines_output+'\n'):
 				result = "CA"
 				if instance.submission_set.filter(user_ID=user_id, status=result).count() == 0:
@@ -226,7 +227,7 @@ def submission(request,id=None):
 		instance.accuracy = (instance.correct_submissions/instance.total_submissions)*100
 		instance.save()
 		
-		context = { "result":result }
+		context = { "result":result, "user": user_detail }
 		
 		return render(request,"submission.html",context)
 
