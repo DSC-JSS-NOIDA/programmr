@@ -197,9 +197,7 @@ def submission(request,id=None):
 		response = r.json()
 		status = response['run_status']['status']
 
-		web_link=r.json()
-		web_link=web_link['web_link']
-
+		web_link=response['web_link']
 
 		if(status == "CE"):
 			result = "CE"
@@ -208,7 +206,6 @@ def submission(request,id=None):
 		elif(status == "RE"):
 			result = "RE"
 		elif(status == "AC"):
-			print response
 			output = response['run_status']['output']
 			if output == (lines_output+'\n'):
 				result = "CA"
