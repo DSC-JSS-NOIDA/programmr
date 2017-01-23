@@ -14,38 +14,38 @@
     <div class="panel panel-default container">         
         <div class="panel-body">
             <br>
-            <span id="title">{{ question.title }}</span>
+            <span id="title">{% autoescape off %}{{ question.title }}{% endautoescape %}</span>
             <br>
             <hr>
             <br>
             <span class="sub_heading">Problem</span>
             <br>
             <br>
-            <span class="sub_text">{{ question.detail|linebreaksbr }}</span>
+            <span class="sub_text">{% autoescape off %}{{ question.detail|linebreaksbr }}{% endautoescape %}</span>
             <br>
             <br>
             <span class="sub_heading">Constraint</span>
             <br>
             <br>
-            <span class="sub_text">{{ question.constraint|linebreaksbr }}</span>
+            <span class="sub_text">{% autoescape off %}{{ question.constraint|linebreaksbr }}{% endautoescape %}</span>
             <br>
             <br>
             <span class="sub_heading">Input Format</span>
             <br>
             <br>
-            <span class="sub_text">{{ question.input_format|linebreaksbr }}</span>
+            <span class="sub_text">{% autoescape off %}{{ question.input_format|linebreaksbr }}{% endautoescape %}</span>
             <br>
             <br>
             <span class="sub_heading">Output Format</span>
             <br>
             <br>
-            <span class="sub_text">{{ question.output_format|linebreaksbr }}</span>
+            <span class="sub_text">{% autoescape off %}{{ question.output_format|linebreaksbr }}{% endautoescape %}</span>
             <br>
             <br>
             <span class="sub_heading">Sample Testcase</span>
             <br>
             <br>
-            <span class="sub_text">{{ question.sample_testcase|linebreaksbr }}</span>
+            <span class="sub_text">{% autoescape off %}{{ question.sample_testcase|linebreaksbr }}{% endautoescape %}</span>
             <br>
             <br>
             <form method='POST' action='/submission/' enctype='multipart/form-data' id="form">
