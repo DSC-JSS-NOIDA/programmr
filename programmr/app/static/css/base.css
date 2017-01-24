@@ -1,3 +1,7 @@
+@font-face {
+    font-family: "My Custom Font";
+    src: url('../fonts/IMPOS50_.ttf') format("truetype");
+}
 * {
 	margin: 0;
 }
@@ -27,4 +31,8 @@ html, body {
 	border-radius: 50%;
     width: 40px;
     margin-top: -10px;
+}
+
+#title {
+	font-family: "My Custom Font" !important;
 }

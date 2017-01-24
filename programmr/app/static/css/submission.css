@@ -24,3 +24,32 @@
 .tle {
     margin-left: 3%;
 }
+
+#box_ce {
+    background-color: #f3f3f3;
+    width: 50%;
+    height: 25em;
+    margin-left: 27%;
+    margin-top: 10%;
+    border-radius: 5px;
+}
+
+#img_ce {
+    margin-left: 23em;
+}
+
+.sub-text-ce {
+    position: absolute;
+    font-size: 1.5em;
+    margin-left: 18%;
+    color: #828282;
+    margin-top: 1%;
+    font-weight: bolder;
+}
+
+#error {
+    color: #fb0000;
+    width: 30em;
+    text-align: center;
+    margin-left: 10em;
+}

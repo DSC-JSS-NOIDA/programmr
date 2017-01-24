@@ -1,6 +1,5 @@
-{% include "include/header.html" %}
-{% include "include/navbar.html" %}
-
-Page Not Found
-
-{% include "include/footer.html" %}
+{% extends "include/base.html" %}
+{% load staticfiles %}
+{% block content %}
+	<img style="margin-left: 25em;" src="{% static 'img/404.jpg' %}">
+{% endblock %}

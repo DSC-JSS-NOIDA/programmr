@@ -23,7 +23,8 @@ a:hover {
   border-radius: 0.2em;
   font-size: 16px;
   color: #FFF;
-  margin-top: 22em;
+  margin-top: 26em;
+  margin-left: 35em;
 }
 .loginBtn:before {
   content: "";
@@ -53,4 +54,9 @@ a:hover {
 .loginBtn--google:hover,
 .loginBtn--google:focus {
   background: #E74B37;
+}
+.btn:hover{
+  color: #fff;
+  text-decoration: none;
+}
 }

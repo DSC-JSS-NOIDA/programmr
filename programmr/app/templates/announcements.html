@@ -2,8 +2,13 @@
 
 {% load staticfiles %}
 
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/announcement.css' %}">
+{% endblock %}
+
 {% block content %}
 
+	<br><br>
 	<center><h1>ANNOUNCEMENT</h1></center>
 
 	<br><br>
@@ -12,23 +17,26 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="row">
-							<div class="portfolio-items isotopeWrapper clearfix" id="3">							  
-								{% for announcement in Announcement %}
-									<article class="col-md-4 isotopeItem webdesign">
-										<div class="portfolio-item">
-											<div class="wow rotateInUpLeft" data-animation-delay="4.8s">
-												<img src="{{ MEDIA_URL }}{{ announcement.image }}" alt="welcome" />
+								{% if Announcement %}
+									<div class="portfolio-items isotopeWrapper clearfix" id="3">		{% for announcement in Announcement %}
+										<article class="col-md-4 isotopeItem webdesign">
+											<div class="portfolio-item">
+												<div class="wow rotateInUpLeft" data-animation-delay="4.8s">
+													<img src="{{ MEDIA_URL }}{{ announcement.image }}" alt="welcome" />
+												</div>
+												<div class="portfolio-desc align-center">
+													<div class="folio-info">
+														<h5>{{ announcement.announcement }}</h5>
+													</div>										   
+												</div>
 											</div>
-											<div class="portfolio-desc align-center">
-												<div class="folio-info">
-													<h5>{{ announcement.announcement }}</h5>
-												</div>										   
-											</div>
-										</div>
-									</article>
-								{% endfor %}
+										</article>
+									{% endfor %}
+									</div>                                       
+								{% else %}
+									<h1 id="no_ann">Sorry No Announcements Yet!</h1>
+								{% endif %}
 
-							</div>                                       
 						</div>                                     
 					</div>
 				</div>				

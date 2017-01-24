@@ -135,13 +135,13 @@ def submission(request,id=None):
 	#! -*- coding: utf-8 -*-
 	#import string
 
+	user_detail = UserProfile.objects.get(user=request.user)
 	if not request.user.is_active:
 		
 		return HttpResponseRedirect(reverse_lazy('login_page'))
 
 	elif request.method == 'POST':
 		
-		user_detail = UserProfile.objects.get(user=request.user)
 		user_id = user_detail.email_ID
 
 		id = request.POST['id']
@@ -196,11 +196,11 @@ def submission(request,id=None):
 		r = requests.post(RUN_URL, data=data)
 		response = r.json()
 		status = response['run_status']['status']
-
-		web_link=response['web_link']
-
+		web_link = response['web_link']
+		c_status = None
 		if(status == "CE"):
 			result = "CE"
+			c_status = response['compile_status']
 		elif(status == "TLE"):
 			result = "TLE"
 		elif(status == "RE"):
@@ -224,12 +224,12 @@ def submission(request,id=None):
 		instance.accuracy = (instance.correct_submissions/instance.total_submissions)*100
 		instance.save()
 		
-		context = { "result":result, "user": user_detail }
+		context = { "result":result, "user": user_detail, "error": c_status }
 		
 		return render(request,"submission.html",context)
 
 	else:
-		return render(request,"errors/404.html")
+		return render(request,"errors/404.html", { "user":user_detail })
 
 
 def leaderboard(request):

@@ -61,3 +61,7 @@ input + input {
     background-color: #f0776c;
     color: white;
 }
+
+.errorlist {
+    display: none;
+}

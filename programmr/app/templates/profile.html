@@ -1,23 +1,32 @@
-{% extends "include/base.html" %}
 
 {% load staticfiles %}
 
 {% block css %}
 
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+	<link rel="icon" href="{% static 'img/icon.png' %}"> 
+	<title>CodeStorm</title>
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link href="{% static 'css/style.css' %}" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
 
 {% endblock %}
 
 {% block content %}
 
-	<br><br>
+	<br><br><br><br><br><br><br><br>
 	<div class="panel panel-default container">			
 		<div class="panel-body">
 			<section id="content">
 		<div class="container">
 			<div class="row">
     			<div class="col-xs-12 col-sm-12 col-md-12">
-					<form role="form" class="register-form" method="post" action="">
+					<form role="form" class="register-form" id="form" method="post" action="">
 						{% csrf_token %}
 						<center><h2>Profile</h2></center>
 						<hr id="colorgraph">
@@ -37,3 +46,13 @@
 	<br>
 
 {% endblock content %}
+
+{% block script %}
+
+	<script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript">
+		$(".errorlist").remove();
+	</script>
+
+{% endblock script %}
