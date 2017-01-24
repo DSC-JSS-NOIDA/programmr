@@ -19,6 +19,7 @@
 			<table class="table bootstrap-datatable countries">
 				<thead>
 					<tr>
+						<th>S No.</th>
 						<th></th>
 						<th>Username</th>
 						<th>Score</th>
@@ -27,6 +28,7 @@
 				<tbody>
 					{% for userdata in data %}
 					<tr>
+						<td>{{ forloop.counter }}</td>
 						<td>
 							<span>
                                 <img alt="" class="img-circle user-img" src="{{ userdata.avatar }}">
